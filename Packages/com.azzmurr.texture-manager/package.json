@@ -1,0 +1,17 @@
+{
+  "name": "com.azzmurr.texture-manager",
+  "displayName": "com.azzmurr.texture-manager",
+  "version": "0.0.1",
+  "description": "This package works with Thry avatar tools and provides UI to easyly get full list of textures on your avatar and some automation",
+  "gitDependencies": {},
+  "vpmDependencies": {
+    "com.vrchat.avatars": "3.8.0"
+  },
+  "author": {
+    "name": "Azzmurr",
+    "email": "trofum@gmaill.com"
+  },
+  "legacyFolders": {},
+  "legacyFiles": {},
+  "localPath": "F:\\Projects\\Unity\\VRChat\\vpm packeges\\vpm-texture-manager\\Packages\\com.azzmurr.texture-manager"
+}

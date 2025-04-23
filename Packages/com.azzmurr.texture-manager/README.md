@@ -1,0 +1,1 @@
+# com.azzmurr.texture-manager by trofu
