@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
+using Thry.AvatarHelpers;
 
 namespace Azzmurr.AvatarHelpers {
     public class TextureManager : EditorWindow

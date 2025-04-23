@@ -1,1 +1,13 @@
-{"dependencies": {}, "locked": {}}
+{
+  "dependencies": {
+    "de.thryrallo.vrc.avatar-performance-tools": {
+      "version": "1.3.7"
+    }
+  },
+  "locked": {
+    "de.thryrallo.vrc.avatar-performance-tools": {
+      "version": "1.3.7",
+      "dependencies": {}
+    }
+  }
+}
