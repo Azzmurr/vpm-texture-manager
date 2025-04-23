@@ -1,8 +1,8 @@
 {
   "name": "com.azzmurr.texture-manager",
-  "displayName": "com.azzmurr.texture-manager",
+  "displayName": "Azzmurr Texture Manager",
   "version": "1.0.0",
-  "description": "This package works with Thry avatar tools and provides UI to easyly get full list of textures on your avatar and some automation",
+  "description": "This package adds some automation for avatar textures and depends on Thry avatar perfomance tools",
   "gitDependencies": {},
   "vpmDependencies": {
     "com.vrchat.avatars": "3.8.0",
