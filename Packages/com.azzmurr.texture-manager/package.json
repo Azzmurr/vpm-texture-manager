@@ -1,7 +1,7 @@
 {
   "name": "com.azzmurr.texture-manager",
   "displayName": "Azzmurr Texture Manager",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "This package adds some automation for avatar textures and depends on Thry avatar perfomance tools",
   "gitDependencies": {},
   "vpmDependencies": {

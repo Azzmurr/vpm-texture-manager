@@ -1,16 +1,17 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Drawing;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using Thry.AvatarHelpers;
 
-namespace Azzmurr.AvatarHelpers {
+namespace Azzmurr.AvatarHelpers
+{
     public class TextureManager : EditorWindow
     {
         [MenuItem("Thry/Avatar/Texture Manager")]
@@ -681,7 +682,6 @@ namespace Azzmurr.AvatarHelpers {
                 if (_texturesList == null) Calc(_avatar);
                 if (_texturesList != null)
                 {
-
                     EditorGUILayout.BeginHorizontal();
                     bool makeAllTexturesLessThan2k = GUILayout.Button(new GUIContent("Textures max size -> 2k"), EditorStyles.miniButtonLeft, GUILayout.Width(200), GUILayout.Height(ROW_HEIGHT));
                     GUILayout.Label("Makes max texture size 2k", GUILayout.MinWidth(200), GUILayout.Height(ROW_HEIGHT));
@@ -709,6 +709,45 @@ namespace Azzmurr.AvatarHelpers {
                         }
 
                         Calc(_avatar);
+                    }
+
+                    EditorGUILayout.BeginHorizontal();
+                    bool createQuestMaterialPresets = GUILayout.Button(new GUIContent("Create Quest Material Presets"), EditorStyles.miniButtonLeft, GUILayout.Width(200), GUILayout.Height(ROW_HEIGHT));
+                    GUILayout.Label("This will create quest materilas with VRChat/Mobile/Standard Lite shader", GUILayout.MinWidth(200), GUILayout.Height(ROW_HEIGHT));
+                    EditorGUILayout.EndHorizontal();
+
+                    if (createQuestMaterialPresets)
+                    {
+                        Scene scene = SceneManager.GetActiveScene();
+
+                        if (EditorUtility.DisplayDialog("Create Quest Materials", $"You are going to create Quest materials with changed shader to VRChat/Mobile/Standard in Assets/Quest Materials/{scene.name}/{_avatar.name}.", "Yes let's do this!", "Naaah, I just hanging around")) 
+                        {
+                            IEnumerable<Material>[] materials = AvatarEvaluator.GetMaterials(_avatar);
+                           
+
+                            if (!Directory.Exists("Assets/Quest Materials")) {
+                                Directory.CreateDirectory("Assets/Quest Materials");
+                            }
+
+                            if (!Directory.Exists($"Assets/Quest Materials/{scene.name.Trim()}")) {
+                                Directory.CreateDirectory($"Assets/Quest Materials/{scene.name.Trim()}");
+                            }
+
+                            if (!Directory.Exists($"Assets/Quest Materials/{scene.name.Trim()}/{_avatar.name.Trim()}")) {
+                                Directory.CreateDirectory($"Assets/Quest Materials/{scene.name.Trim()}/{_avatar.name.Trim()}");
+                            }
+
+                            foreach (Material m in materials[1])
+                            { 
+                                if (m != null) 
+                                {
+                                    Material newQuestMaterial = new Material(m);
+                                    newQuestMaterial.shader = Shader.Find("VRChat/Mobile/Standard Lite");
+                                    UnityEditor.AssetDatabase.CreateAsset(newQuestMaterial, $"Assets/Quest Materials/{scene.name.Trim()}/{_avatar.name.Trim()}/{m.name}.mat");
+
+                                }
+                            }
+                        }
                     }
 
                     EditorGUILayout.BeginHorizontal();
@@ -849,6 +888,7 @@ namespace Azzmurr.AvatarHelpers {
         static Dictionary<Texture, bool> GetTextures(GameObject avatar)
         {
             IEnumerable<Material>[] materials = AvatarEvaluator.GetMaterials(avatar);
+
             Dictionary<Texture, bool> textures = new Dictionary<Texture, bool>();
             foreach (Material m in materials[1])
             {
