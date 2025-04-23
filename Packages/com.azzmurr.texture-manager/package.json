@@ -1,7 +1,7 @@
 {
   "name": "com.azzmurr.texture-manager",
   "displayName": "Azzmurr Texture Manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This package adds some automation for avatar textures and depends on Thry avatar perfomance tools",
   "gitDependencies": {},
   "vpmDependencies": {
@@ -12,7 +12,8 @@
     "name": "Azzmurr",
     "email": "trofum@gmaill.com"
   },
-  "legacyFolders": {},
-  "legacyFiles": {},
-  "localPath": "F:\\Projects\\Unity\\VRChat\\vpm packeges\\vpm-texture-manager\\Packages\\com.azzmurr.texture-manager"
+  "legacyFolders": {
+    "Assets\\ThryTextureManager": ""
+  },
+  "legacyFiles": {}
 }
