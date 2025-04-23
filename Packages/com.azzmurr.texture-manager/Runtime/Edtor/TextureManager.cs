@@ -9,8 +9,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
 
-namespace Azzmurr.AvatarHelpers
-{
+namespace Azzmurr.AvatarHelpers {
     public class TextureManager : EditorWindow
     {
         [MenuItem("Thry/Avatar/Texture Manager")]
