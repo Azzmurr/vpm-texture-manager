@@ -49,7 +49,6 @@ namespace Azzmurr.AvatarHelpers
 
         Vector2 _scrollPosMajor;
 
-        GUIStyle styleButtonTextFloatLeft;
         GUIContent matActiveIcon;
         GUIContent matInactiveIcon;
         GUIContent refreshIcon;
@@ -102,8 +101,10 @@ namespace Azzmurr.AvatarHelpers
 
             if (_avatar != null)
             {
-                using (new EditorGUILayout.ScrollViewScope(_scrollPosMajor))
+                using (var scroll = new EditorGUILayout.ScrollViewScope(_scrollPosMajor))
                 {
+
+                    _scrollPosMajor = scroll.scrollPosition;
                     GUILine();
                     EditorGUILayout.Space();
 
@@ -302,7 +303,7 @@ namespace Azzmurr.AvatarHelpers
                                 {
                                     if (textureMeta.betterTextureFormat != null)
                                     {
-                                        bool changeFormat = GUILayout.Button($"{textureMeta.betterTextureFormat} → -{textureMeta.savedSizeWithBetterTextureFormat}", styleButtonTextFloatLeft);
+                                        bool changeFormat = GUILayout.Button($"{textureMeta.betterTextureFormat} → -{textureMeta.savedSizeWithBetterTextureFormat}");
                                         if (changeFormat)
                                         {
                                             bool changeFormatPopup = EditorUtility.DisplayDialog(
@@ -351,16 +352,6 @@ namespace Azzmurr.AvatarHelpers
                     }
 
                 }
-
-
-
-
-
-
-
-
-
-
             }
         }
 
