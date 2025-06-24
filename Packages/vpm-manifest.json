@@ -2,11 +2,24 @@
   "dependencies": {
     "de.thryrallo.vrc.avatar-performance-tools": {
       "version": "1.3.7"
+    },
+    "com.vrchat.avatars": {
+      "version": "3.8.1"
     }
   },
   "locked": {
     "de.thryrallo.vrc.avatar-performance-tools": {
       "version": "1.3.7",
+      "dependencies": {}
+    },
+    "com.vrchat.avatars": {
+      "version": "3.8.1",
+      "dependencies": {
+        "com.vrchat.base": "3.8.1"
+      }
+    },
+    "com.vrchat.base": {
+      "version": "3.8.1",
       "dependencies": {}
     }
   }
