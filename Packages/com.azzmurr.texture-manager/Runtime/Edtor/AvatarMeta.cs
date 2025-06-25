@@ -131,13 +131,11 @@ namespace Azzmurr.Utils
                 {
                     if (materialsRelatedToTextures.ContainsKey(texture.texture))
                     {
-                        Debug.Log($"ADDING DATA TO EXISTING TEXTURE {texture.texture.name}");
                         HashSet<Material> materials = materialsRelatedToTextures.GetValueSafe(texture.texture);
                         materials.Add(material.Material);
                     }
                     else
                     {
-                        Debug.Log($"CREATING DATA TO EXISTING TEXTURE {texture.texture.name}");
                         materialsRelatedToTextures.Add(texture.texture, new HashSet<Material> { material.Material });
                         textures.Add(texture);
                     }
