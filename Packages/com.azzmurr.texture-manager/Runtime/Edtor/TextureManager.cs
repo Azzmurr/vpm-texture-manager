@@ -72,7 +72,7 @@ namespace Azzmurr.Utils
             using (new EditorGUILayout.HorizontalScope())
             {
                bool refresh = GUILayout.Button(refreshIcon, GUILayout.Width(30), GUILayout.Height(30));
-                if (refresh && _avatar != null) _avatar.recalculate();
+                if (refresh && _avatar != null) _avatar.Recalculate();
 
                 GameObject gameObject = (GameObject) EditorGUILayout.ObjectField(GUIContent.none, _avatar?.GameObject, typeof(GameObject), true, GUILayout.Height(30));
 
@@ -130,7 +130,7 @@ namespace Azzmurr.Utils
                                 });
 
 
-                                _avatar.recalculate();
+                                _avatar.Recalculate();
                             }
 
                             Boolean createQuestMaterialPresets = false;
@@ -215,7 +215,7 @@ namespace Azzmurr.Utils
                                         if (newResolution != texture.pcResolution)
                                         {
                                             texture.ChangeImportSize(newResolution);
-                                            _avatar.recalculate();
+                                            _avatar.Recalculate();
                                         }
                                     }
                                     else
@@ -233,7 +233,7 @@ namespace Azzmurr.Utils
                                         if (newResolutionAndroid != texture.androidResolution)
                                         {
                                             texture.ChangeImportSizeAndroid(newResolutionAndroid);
-                                            _avatar.recalculate();
+                                            _avatar.Recalculate();
                                         }
                                     }
                                     else
@@ -253,7 +253,7 @@ namespace Azzmurr.Utils
                                             if (newFormat != 0)
                                             {
                                                 texture.ChangeImporterFormat(_compressionFormatOptions[newFormat]);
-                                                _avatar.recalculate();
+                                                _avatar.Recalculate();
                                             }
                                         }
 
@@ -284,7 +284,7 @@ namespace Azzmurr.Utils
                                             if (changeFormatPopup)
                                             {
                                                 texture.ChangeImporterFormat((TextureImporterFormat)texture.betterTextureFormat);
-                                                _avatar.recalculate();
+                                                _avatar.Recalculate();
                                             }
                                         }
                                     }
@@ -296,7 +296,7 @@ namespace Azzmurr.Utils
                                         if (chageImportSize)
                                         {
                                             texture.ChangeImportSize(2048);
-                                            _avatar.recalculate();
+                                            _avatar.Recalculate();
                                         }
                                     }
                                 });

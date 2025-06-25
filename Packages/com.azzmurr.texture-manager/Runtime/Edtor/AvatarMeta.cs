@@ -14,7 +14,7 @@ namespace Azzmurr.Utils
         private IEnumerable<MaterialMeta> materials;
         private IEnumerable<TextureMeta> textures;
 
-        private Dictionary<Texture, List<Material>> materialsRelatedToTextures = new();
+        private Dictionary<Texture, HashSet<Material>> materialsRelatedToTextures = new();
 
         public string Name
         {
@@ -39,7 +39,7 @@ namespace Azzmurr.Utils
         public AvatarMeta(GameObject gameObject)
         {
             avatarObject = gameObject;
-            recalculate();
+            Recalculate();
         }
 
         public void Recalculate()
@@ -131,12 +131,14 @@ namespace Azzmurr.Utils
                 {
                     if (materialsRelatedToTextures.ContainsKey(texture.texture))
                     {
-                        List<Material> materials = materialsRelatedToTextures.GetValueSafe(texture.texture);
+                        Debug.Log($"ADDING DATA TO EXISTING TEXTURE {texture.texture.name}");
+                        HashSet<Material> materials = materialsRelatedToTextures.GetValueSafe(texture.texture);
                         materials.Add(material.Material);
                     }
                     else
                     {
-                        materialsRelatedToTextures.Add(texture.texture, new List<Material> { material.Material });
+                        Debug.Log($"CREATING DATA TO EXISTING TEXTURE {texture.texture.name}");
+                        materialsRelatedToTextures.Add(texture.texture, new HashSet<Material> { material.Material });
                         textures.Add(texture);
                     }
                 });
@@ -145,8 +147,8 @@ namespace Azzmurr.Utils
             List<TextureMeta> textureMetas = textures.ToList();
             textureMetas.Sort((t1, t2) =>
             {
-                string material1 = materialsRelatedToTextures[t1.texture][0].name;
-                string material2 = materialsRelatedToTextures[t2.texture][0].name;
+                string material1 = materialsRelatedToTextures[t1.texture].ToList()[0].name;
+                string material2 = materialsRelatedToTextures[t2.texture].ToList()[0].name;
 
                 return material1.CompareTo(material2);
             });
