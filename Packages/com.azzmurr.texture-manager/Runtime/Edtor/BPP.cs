@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Azzmurr.AvatarHelpers {
+namespace Azzmurr.Utils {
     //https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
     class BPPConfig
     {

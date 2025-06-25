@@ -7,9 +7,9 @@ using UnityEngine.Rendering;
 using Thry.AvatarHelpers;
 
 
-namespace Azzmurr.AvatarHelpers
+namespace Azzmurr.Utils
 {
-    struct TextureMeta : IComparable
+    class TextureMeta : IComparable
     {
         public Texture texture;
         public string path;
@@ -36,7 +36,7 @@ namespace Azzmurr.AvatarHelpers
         public string saveSizeWithSmallerTexture;
         public TextureImporterFormat? bestTextureFormat;
 
-        public void calculate(Texture t, List<Material> materials)
+        public TextureMeta(Texture t, List<Material> materials)
         {
             try
             {
@@ -70,7 +70,14 @@ namespace Azzmurr.AvatarHelpers
                 Debug.LogError($"Error for texture {texture.name}");
                 throw e;
             }
+        }
 
+        public void ForeachMaterial(Action<Material> action)
+        {
+            foreach (Material material in materials)
+            {
+                action.Invoke(material);
+            }
         }
 
         public void ChangeImportSize(int size)

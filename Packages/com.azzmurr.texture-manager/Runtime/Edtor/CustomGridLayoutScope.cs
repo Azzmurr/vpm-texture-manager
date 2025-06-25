@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
  
-namespace Azzmurr.AvatarHelpers
+namespace Azzmurr.Utils
 {
     public class VariableGridScope : IDisposable
     {

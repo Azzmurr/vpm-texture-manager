@@ -1,4 +1,4 @@
-namespace Azzmurr.AvatarHelpers
+namespace Azzmurr.Utils
 {
     
 }
