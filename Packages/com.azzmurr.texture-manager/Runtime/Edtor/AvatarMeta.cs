@@ -4,14 +4,17 @@ using System.Linq;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 using System;
+using HarmonyLib;
 
 namespace Azzmurr.Utils
 {
     class AvatarMeta
     {
         private GameObject avatarObject;
-        private IEnumerable<Material> materials;
+        private IEnumerable<MaterialMeta> materials;
         private IEnumerable<TextureMeta> textures;
+
+        private Dictionary<Texture, List<Material>> materialsRelatedToTextures = new();
 
         public string Name
         {
@@ -50,9 +53,9 @@ namespace Azzmurr.Utils
             EditorUtility.ClearProgressBar();
         }
 
-        public void ForeachMaterial(Action<Material> action)
+        public void ForeachMaterial(Action<MaterialMeta> action)
         {
-            foreach (Material material in materials)
+            foreach (MaterialMeta material in materials)
             {
                 action.Invoke(material);
             }
@@ -66,7 +69,18 @@ namespace Azzmurr.Utils
             }
         }
 
-        private IEnumerable<Material> GetMaterials()
+        public void ForeachTextureMaterial(TextureMeta texture, Action<Material> action)
+        {
+            if (materialsRelatedToTextures[texture.texture] != null)
+            {
+                foreach (Material material in materialsRelatedToTextures[texture.texture])
+                {
+                    action.Invoke(material);
+                }
+            }
+        }
+
+        private IEnumerable<MaterialMeta> GetMaterials()
         {
             IEnumerable<Renderer> allBuiltRenderers = avatarObject
                 .GetComponentsInChildren<Renderer>(true)
@@ -97,59 +111,47 @@ namespace Azzmurr.Utils
                 }
             }
 
-            return materialsAll.Distinct();
+            List<MaterialMeta> materialMetas = materialsAll
+                .ToList()
+                .ConvertAll((material) => new MaterialMeta(material));
+
+            return materialMetas.Distinct();
         }
 
         private IEnumerable<TextureMeta> GetTextures()
         {
-            HashSet<Texture> textures = new HashSet<Texture>();
+            HashSet<TextureMeta> textures = new HashSet<TextureMeta>();
+            materialsRelatedToTextures = new();
 
-            foreach (Material material in materials)
+            ForeachMaterial((material) =>
             {
-                if (material == null) continue;
+                if (material == null) return;
 
-                int[] textureIds = material.GetTexturePropertyNameIDs();
-
-                foreach (int id in textureIds)
+                material.ForeachTexture((texture) =>
                 {
-                    if (!material.HasProperty(id)) continue;
+                    if (materialsRelatedToTextures.ContainsKey(texture.texture))
+                    {
+                        List<Material> materials = materialsRelatedToTextures.GetValueSafe(texture.texture);
+                        materials.Add(material.Material);
+                    }
+                    else
+                    {
+                        materialsRelatedToTextures.Add(texture.texture, new List<Material> { material.Material });
+                        textures.Add(texture);
+                    }
+                });
+            });
 
-                    Texture texture = material.GetTexture(id);
-                    if (texture == null) continue;
+            List<TextureMeta> textureMetas = textures.ToList();
+            textureMetas.Sort((t1, t2) =>
+            {
+                string material1 = materialsRelatedToTextures[t1.texture][0].name;
+                string material2 = materialsRelatedToTextures[t2.texture][0].name;
 
-                    textures.Add(texture);
-
-                }
-            }
-
-            List<TextureMeta> textureMetas = textures
-                .ToList()
-                .ConvertAll((texture) => new TextureMeta(texture, GetMaterialsUsingTexture(texture, materials)));
-
-            textureMetas.Sort((t1, t2) => t1.CompareTo(t2));
+                return material1.CompareTo(material2);
+            });
 
             return textureMetas;
-                
-        }
-
-        private List<Material> GetMaterialsUsingTexture(Texture texture, IEnumerable<Material> materialsToSearch)
-        {
-            List<Material> materials = new List<Material>();
-
-            foreach (Material mat in materialsToSearch)
-            {
-                foreach (string propName in mat.GetTexturePropertyNames())
-                {
-                    Texture matTex = mat.GetTexture(propName);
-                    if (matTex != null && matTex == texture)
-                    {
-                        materials.Add(mat);
-                        break;
-                    }
-                }
-            }
-
-            return materials;
         }
     }
 }

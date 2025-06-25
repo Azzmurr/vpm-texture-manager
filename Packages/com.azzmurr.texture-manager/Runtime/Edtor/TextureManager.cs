@@ -72,7 +72,7 @@ namespace Azzmurr.Utils
             using (new EditorGUILayout.HorizontalScope())
             {
                bool refresh = GUILayout.Button(refreshIcon, GUILayout.Width(30), GUILayout.Height(30));
-                if (refresh) _avatar.recalculate();
+                if (refresh && _avatar != null) _avatar.recalculate();
 
                 GameObject gameObject = (GameObject) EditorGUILayout.ObjectField(GUIContent.none, _avatar?.GameObject, typeof(GameObject), true, GUILayout.Height(30));
 
@@ -162,9 +162,8 @@ namespace Azzmurr.Utils
                                     {
                                         if (material != null)
                                         {
-                                            Material newQuestMaterial = new Material(material);
-                                            newQuestMaterial.shader = Shader.Find("VRChat/Mobile/Standard Lite");
-                                            AssetDatabase.CreateAsset(newQuestMaterial, $"Assets/Quest Materials/{scene.name.Trim()}/{_avatar.Name.Trim()}/{material.name}.mat");
+                                            Material newQuestMaterial = material.getQuestMaterial();
+                                            AssetDatabase.CreateAsset(newQuestMaterial, $"Assets/Quest Materials/{scene.name.Trim()}/{_avatar.Name.Trim()}/{material.Name}.mat");
 
                                         }
                                     });
@@ -202,7 +201,7 @@ namespace Azzmurr.Utils
                                 {
                                     using (new EditorGUILayout.VerticalScope())
                                     {
-                                        texture.ForeachMaterial((material) => EditorGUILayout.ObjectField(material, typeof(Material), false));
+                                        _avatar.ForeachTextureMaterial(texture, (material) => EditorGUILayout.ObjectField(material, typeof(Material), false));
                                     }
                                 });
                                 GridResults.Cell((Texture) => EditorGUILayout.ObjectField(texture.texture, typeof(object), false));

@@ -7,75 +7,56 @@ using UnityEngine.Rendering;
 
 namespace Azzmurr.Utils
 {
-    class TextureMeta : IComparable
+    class TextureMeta : IEqualityComparer<TextureMeta>
     {
-        public Texture texture;
-        public string path;
-        public bool isPoiyomi;
-        public TextureImporter importer;
-        public long size;
-        public string sizeString;
-        public TextureFormat? format;
-        public RenderTextureFormat? RT_format;
-        public string formatString;
-        public float BPP;
-        public int minBPP;
-        public bool hasAlpha;
-        public List<Material> materials;
-        public string firstMaterialName;
-        public bool materialDropDown;
-        public int pcResolution;
-        public int androidResolution;
-        public bool textureWithChangableResolution;
-        public bool textureWithChangableFormat;
-        public TextureImporterFormat? betterTextureFormat;
-        public string savedSizeWithBetterTextureFormat;
-        public bool textureTooBig;
-        public string saveSizeWithSmallerTexture;
-        public TextureImporterFormat? bestTextureFormat;
+        readonly public Texture texture;
+        readonly public string path;
+        readonly public bool isPoiyomi;
+        readonly public TextureImporter importer;
+        readonly public long size;
+        readonly public string sizeString;
+        readonly public TextureFormat? format;
+        readonly public RenderTextureFormat? RT_format;
+        readonly public string formatString;
+        readonly public float BPP;
+        readonly public int minBPP;
+        readonly public bool hasAlpha;
+        readonly public List<Material> materials;
+        readonly public string firstMaterialName;
+        readonly public bool materialDropDown;
+        readonly public int pcResolution;
+        readonly public int androidResolution;
+        readonly public bool textureWithChangableResolution;
+        readonly public bool textureWithChangableFormat;
+        readonly public TextureImporterFormat? betterTextureFormat;
+        readonly public string savedSizeWithBetterTextureFormat;
+        readonly public bool textureTooBig;
+        readonly public string saveSizeWithSmallerTexture;
+        readonly public TextureImporterFormat? bestTextureFormat;
 
-        public TextureMeta(Texture t, List<Material> materials)
+        public TextureMeta(Texture t)
         {
-            try
-            {
-                texture = t;
-                path = AssetDatabase.GetAssetPath(texture);
-                isPoiyomi = path.Contains("_PoiyomiShaders");
-                importer = AssetImporter.GetAtPath(path) as TextureImporter;
-                format = GetTextureFormat();
-                RT_format = GetRenderTextureFormat();
-                formatString = format != null ? format.ToString() : RT_format != null ? RT_format.ToString() : "";
-                hasAlpha = getHasAlpha();
-                BPP = getBPP();
-                minBPP = getMinBPP();
-                size = getSize();
-                sizeString = ToMebiByteString(size);
-                this.materials = materials;
-                firstMaterialName = GetFirstMaterialName();
-                pcResolution = GetMaxResolution("PC");
-                androidResolution = GetMaxResolution("Android");
-                textureWithChangableResolution = importer != null && !isPoiyomi;
-                textureWithChangableFormat = getTextureHasChangableFormat();
-                betterTextureFormat = getBetterFormat();
-                savedSizeWithBetterTextureFormat = getSavedSizeString();
-                textureTooBig = importer != null && pcResolution > 2048;
-                saveSizeWithSmallerTexture = ToShortMebiByteString(size - TextureToBytesUsingBPP(texture, BPP, 2048f / pcResolution));
-                bestTextureFormat = getTheBestFormat();
-
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Error for texture {texture.name}");
-                throw e;
-            }
-        }
-
-        public void ForeachMaterial(Action<Material> action)
-        {
-            foreach (Material material in materials)
-            {
-                action.Invoke(material);
-            }
+            texture = t;
+            path = AssetDatabase.GetAssetPath(texture);
+            isPoiyomi = path.Contains("_PoiyomiShaders");
+            importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            format = GetTextureFormat();
+            RT_format = GetRenderTextureFormat();
+            formatString = format != null ? format.ToString() : RT_format != null ? RT_format.ToString() : "";
+            hasAlpha = getHasAlpha();
+            BPP = getBPP();
+            minBPP = getMinBPP();
+            size = getSize();
+            sizeString = ToMebiByteString(size);
+            pcResolution = GetMaxResolution("PC");
+            androidResolution = GetMaxResolution("Android");
+            textureWithChangableResolution = importer != null && !isPoiyomi;
+            textureWithChangableFormat = getTextureHasChangableFormat();
+            betterTextureFormat = getBetterFormat();
+            savedSizeWithBetterTextureFormat = getSavedSizeString();
+            textureTooBig = importer != null && pcResolution > 2048;
+            saveSizeWithSmallerTexture = ToShortMebiByteString(size - TextureToBytesUsingBPP(texture, BPP, 2048f / pcResolution));
+            bestTextureFormat = getTheBestFormat();
         }
 
         public void ChangeImportSize(int size)
@@ -126,16 +107,6 @@ namespace Azzmurr.Utils
             }
         }
 
-        public int CompareTo(object obj)
-        {
-            if (obj is TextureMeta)
-            {
-                return firstMaterialName.CompareTo(((TextureMeta)obj).firstMaterialName);
-            }
-
-            return 0;
-        }
-
         private TextureImporterFormat? getBetterFormat()
         {
             if (textureWithChangableFormat && BPP > minBPP)
@@ -174,21 +145,6 @@ namespace Azzmurr.Utils
             }
 
             return 0;
-        }
-
-        private string GetFirstMaterialName()
-        {
-            if (materials.Count == 0)
-            {
-                return Config.DEFAULT_MAT_NAME;
-            }
-
-            if (materials.Count == 1)
-            {
-                return materials[0].name;
-            }
-
-            return $"{materials[0].name} + {materials.Count - 1} more";
         }
 
         private TextureFormat? GetTextureFormat() => texture switch
@@ -280,6 +236,16 @@ namespace Azzmurr.Utils
                 bytes = Profiler.GetRuntimeMemorySizeLong(t);
             }
             return bytes;
+        }
+
+        public bool Equals(TextureMeta x, TextureMeta y)
+        {
+            return x.texture.Equals(y.texture);
+        }
+
+        public int GetHashCode(TextureMeta obj)
+        {
+            return obj.texture.GetHashCode();
         }
     }
 }
