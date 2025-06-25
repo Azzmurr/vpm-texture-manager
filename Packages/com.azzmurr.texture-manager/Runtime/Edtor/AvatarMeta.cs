@@ -42,7 +42,7 @@ namespace Azzmurr.Utils
             recalculate();
         }
 
-        public void recalculate()
+        public void Recalculate()
         {
             EditorUtility.DisplayProgressBar("Getting Avatar Data", "Getting Materials", 0.3f);
             materials = GetMaterials();
