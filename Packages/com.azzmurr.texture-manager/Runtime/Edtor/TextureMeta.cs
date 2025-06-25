@@ -4,8 +4,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
-using Thry.AvatarHelpers;
-
 
 namespace Azzmurr.Utils
 {
@@ -51,7 +49,7 @@ namespace Azzmurr.Utils
                 BPP = getBPP();
                 minBPP = getMinBPP();
                 size = getSize();
-                sizeString = AvatarEvaluator.ToMebiByteString(size);
+                sizeString = ToMebiByteString(size);
                 this.materials = materials;
                 firstMaterialName = GetFirstMaterialName();
                 pcResolution = GetMaxResolution("PC");
@@ -61,7 +59,7 @@ namespace Azzmurr.Utils
                 betterTextureFormat = getBetterFormat();
                 savedSizeWithBetterTextureFormat = getSavedSizeString();
                 textureTooBig = importer != null && pcResolution > 2048;
-                saveSizeWithSmallerTexture = AvatarEvaluator.ToShortMebiByteString(size - TextureToBytesUsingBPP(texture, BPP, 2048f / pcResolution));
+                saveSizeWithSmallerTexture = ToShortMebiByteString(size - TextureToBytesUsingBPP(texture, BPP, 2048f / pcResolution));
                 bestTextureFormat = getTheBestFormat();
 
             }
@@ -162,7 +160,7 @@ namespace Azzmurr.Utils
         {
             if (betterTextureFormat != null)
             {
-                return AvatarEvaluator.ToShortMebiByteString(size - TextureToBytesUsingBPP(texture, BPPConfig.BPP[(TextureFormat)betterTextureFormat]));
+                return ToShortMebiByteString(size - TextureToBytesUsingBPP(texture, BPPConfig.BPP[(TextureFormat)betterTextureFormat]));
             }
 
             return "";
@@ -244,7 +242,23 @@ namespace Azzmurr.Utils
             _ => false,
         };
 
-        static long TextureToBytesUsingBPP(Texture t, float bpp, float resolutionScale = 1)
+        private string ToMebiByteString(long l)
+        {
+            if (l < Math.Pow(2, 10)) return l + " B";
+            if (l < Math.Pow(2, 20)) return (l / Math.Pow(2, 10)).ToString("n2") + " KiB";
+            if (l < Math.Pow(2, 30)) return (l / Math.Pow(2, 20)).ToString("n2") + " MiB";
+            else return (l / Math.Pow(2, 30)).ToString("n2") + " GiB";
+        }
+
+        private string ToShortMebiByteString(long l)
+        {
+            if (l < Math.Pow(2, 10)) return l + " B";
+            if (l < Math.Pow(2, 20)) return (l / Math.Pow(2, 10)).ToString("n0") + " KiB";
+            if (l < Math.Pow(2, 30)) return (l / Math.Pow(2, 20)).ToString("n1") + " MiB";
+            else return (l / Math.Pow(2, 30)).ToString("n1") + " GiB";
+        }
+
+        private long TextureToBytesUsingBPP(Texture t, float bpp, float resolutionScale = 1)
         {
             int width = (int)(t.width * resolutionScale);
             int height = (int)(t.height * resolutionScale);

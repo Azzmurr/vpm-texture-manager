@@ -2,11 +2,9 @@
   "name": "com.azzmurr.texture-manager",
   "displayName": "Azzmurr - Texture Manager",
   "version": "1.2.2",
-  "description": "This package adds some automation for avatar textures and depends on Thry avatar perfomance tools",
+  "description": "This package adds some automation for avatar textures",
   "gitDependencies": {},
-  "vpmDependencies": {
-	  "de.thryrallo.vrc.avatar-performance-tools": ">=1.3.7"
-  },
+  "vpmDependencies": {},
   "author": {
     "name": "Azzmurr",
     "email": "trofum@gmaill.com"

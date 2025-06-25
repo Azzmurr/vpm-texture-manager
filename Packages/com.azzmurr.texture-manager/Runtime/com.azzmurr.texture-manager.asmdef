@@ -3,8 +3,7 @@
     "rootNamespace": "",
     "references": [
         "VRC.SDK3A",
-        "VRC.SDKBase",
-        "de.thryrallo.vrc.avatar-performance-tools"
+        "VRC.SDKBase"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

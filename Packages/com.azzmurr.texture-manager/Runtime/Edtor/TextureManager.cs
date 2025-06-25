@@ -1,12 +1,10 @@
 ﻿#if UNITY_EDITOR
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Thry.AvatarHelpers;
 
 namespace Azzmurr.Utils
 {
