@@ -71,17 +71,15 @@ namespace Azzmurr.Utils
             EditorGUI.BeginChangeCheck();
             using (new EditorGUILayout.HorizontalScope())
             {
-                GUI.enabled = _avatar != null;
-
-                bool refresh = GUILayout.Button(refreshIcon, GUILayout.Width(30), GUILayout.Height(30));
+               bool refresh = GUILayout.Button(refreshIcon, GUILayout.Width(30), GUILayout.Height(30));
                 if (refresh) _avatar.recalculate();
 
-                GUI.enabled = true;
+                GameObject gameObject = (GameObject) EditorGUILayout.ObjectField(GUIContent.none, _avatar?.GameObject, typeof(GameObject), true, GUILayout.Height(30));
 
-                GameObject gameObject = (GameObject)EditorGUILayout.ObjectField(GUIContent.none, _avatar?.GameObject, typeof(GameObject), true, GUILayout.Height(30));
-                _avatar = gameObject ? new AvatarMeta(gameObject) : null;
-
-                if (EditorGUI.EndChangeCheck() && _avatar != null) _avatar.recalculate();
+                if (_avatar == null || _avatar.GameObject != gameObject)
+                {
+                    _avatar = gameObject ? new AvatarMeta(gameObject) : null;
+                }
             }
 
 
