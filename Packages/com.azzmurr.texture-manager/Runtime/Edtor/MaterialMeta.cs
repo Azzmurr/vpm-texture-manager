@@ -10,14 +10,61 @@ namespace Azzmurr.Utils
         readonly private Material material;
         readonly private IEnumerable<TextureMeta> textures;
 
-        public string Name
+        public string Name => material.name;
+
+        public Material Material => material;
+
+        public Shader Shader => material.shader;
+
+        public bool Poiyomi => Shader.name.Contains(".poiyomi");
+
+        public bool Standard => Shader.name == "Standard";
+
+        public bool FastFur => Shader.name.Contains("Fast Fur");
+
+        public bool Goo => Shader.name.Contains(".ValueFactory");
+
+        public bool Locked => Shader.name.Contains("Hidden");
+
+        public string ShaderName
         {
-            get { return material.name; }
+            get
+            {
+                if (Locked) return Shader.name.Split("/")[^2];
+                return Shader.name.Split("/")[^1];
+            }
         }
 
-        public Material Material
+        public string ShaderVersion
         {
-            get { return material; }
+            get
+            {
+                if (Standard)
+                {
+                    return "Latest";
+                }
+
+                if (Poiyomi)
+                {
+                    if (Shader.name.Contains("Hidden") && Shader.name.Contains("Old Versions")) return $"{Shader.name.Split("/")[4]}";
+                    if (!Shader.name.Contains("Hidden") && Shader.name.Contains("Old Versions")) return Shader.name.Split("/")[2];
+                    return "Latest";
+                }
+
+                if (FastFur)
+                {
+                    if (Shader.name.Contains("Hidden")) return $"{Shader.name.Split("/")[2]}";
+                    return Shader.name.Split("/")[0];
+                }
+
+                if (Goo)
+                {
+                    if (Shader.name.Contains("Hidden")) return $"{Shader.name.Split("/")[2]}";
+                    return Shader.name.Split("/")[1];
+                }
+
+                return "Unknown";
+            }
         }
 
         public MaterialMeta(Material material)
@@ -45,11 +92,12 @@ namespace Azzmurr.Utils
         {
             HashSet<Texture> textures = new HashSet<Texture>();
             int[] textureIds = material.GetTexturePropertyNameIDs();
+            string[] textureNames = material.GetTexturePropertyNames();
+            Debug.Log($"Shader Version - {ShaderName}");
 
             foreach (int id in textureIds)
             {
                 if (!material.HasProperty(id)) continue;
-
                 Texture texture = material.GetTexture(id);
                 if (texture == null) continue;
 

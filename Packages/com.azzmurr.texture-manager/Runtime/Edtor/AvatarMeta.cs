@@ -16,25 +16,13 @@ namespace Azzmurr.Utils
 
         private Dictionary<Texture, HashSet<Material>> materialsRelatedToTextures = new();
 
-        public string Name
-        {
-            get { return avatarObject.name; }
-        }
+        public string Name => avatarObject.name;
 
-        public GameObject GameObject
-        {
-            get { return avatarObject; }
-        }
+        public GameObject GameObject => avatarObject;
 
-        public int MaterialsCount
-        {
-            get { return materials != null ? materials.Count() : 0; }
-        }
+        public int MaterialsCount => materials != null ? materials.Count() : 0;
 
-        public int TextureCount
-        {
-            get { return textures != null ? textures.Count() : 0; }
-        }
+        public int TextureCount => textures != null ? textures.Count() : 0;
 
         public AvatarMeta(GameObject gameObject)
         {

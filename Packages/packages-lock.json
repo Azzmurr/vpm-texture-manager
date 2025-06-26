@@ -90,8 +90,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.postprocessing": {
-      "version": "3.4.0",
-      "depth": 1,
+      "version": "3.2.2",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.physics": "1.0.0"
@@ -210,6 +210,12 @@
     },
     "de.thryrallo.vrc.avatar-performance-tools": {
       "version": "file:de.thryrallo.vrc.avatar-performance-tools",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "gay.shader.goo_2": {
+      "version": "file:gay.shader.goo_2",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

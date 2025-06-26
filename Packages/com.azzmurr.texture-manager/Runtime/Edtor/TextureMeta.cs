@@ -10,87 +10,62 @@ namespace Azzmurr.Utils
     class TextureMeta : IEqualityComparer<TextureMeta>
     {
         readonly public Texture texture;
-        readonly public string path;
-        readonly public bool isPoiyomi;
-        readonly public TextureImporter importer;
-        readonly public long size;
-        readonly public string sizeString;
-        readonly public TextureFormat? format;
-        readonly public RenderTextureFormat? RT_format;
-        readonly public string formatString;
-        readonly public float BPP;
-        readonly public int minBPP;
-        readonly public bool hasAlpha;
-        readonly public List<Material> materials;
-        readonly public string firstMaterialName;
-        readonly public bool materialDropDown;
-        readonly public int pcResolution;
-        readonly public int androidResolution;
-        readonly public bool textureWithChangableResolution;
-        readonly public bool textureWithChangableFormat;
-        readonly public TextureImporterFormat? betterTextureFormat;
-        readonly public string savedSizeWithBetterTextureFormat;
-        readonly public bool textureTooBig;
-        readonly public string saveSizeWithSmallerTexture;
-        readonly public TextureImporterFormat? bestTextureFormat;
+        public string Path => AssetDatabase.GetAssetPath(texture);
+        public bool Poiyomi => Path.Contains("_PoiyomiShaders");
+        public TextureImporter Importer => AssetImporter.GetAtPath(Path) as TextureImporter;
+        public long Size => getSize();
+        public string SizeString => ToMebiByteString(Size);
+        public TextureFormat? Format => GetTextureFormat();
+        public RenderTextureFormat? RT_format => GetRenderTextureFormat();
+        public string FormatString => Format != null ? Format.ToString() : RT_format != null ? RT_format.ToString() : "";
+        public float BPP => getBPP();
+        public int MinBPP => getMinBPP();
+        public bool HasAlpha => getHasAlpha();
+        public int PcResolution => GetMaxResolution("PC");
+        public int AndroidResolution => GetMaxResolution("Android");
+        public bool TextureWithChangableResolution => Importer != null && !Poiyomi;
+        public bool TextureWithChangableFormat => getTextureHasChangableFormat();
+        public TextureImporterFormat? BetterTextureFormat => getBetterFormat();
+        public string SavedSizeWithBetterTextureFormat => getSavedSizeString();
+        public bool TextureTooBig => Importer != null && PcResolution > 2048;
+        public string SaveSizeWithSmallerTexture => ToShortMebiByteString(Size - TextureToBytesUsingBPP(texture, BPP, 2048f / PcResolution));
+        public TextureImporterFormat? BestTextureFormat => getTheBestFormat();
 
         public TextureMeta(Texture t)
         {
             texture = t;
-            path = AssetDatabase.GetAssetPath(texture);
-            isPoiyomi = path.Contains("_PoiyomiShaders");
-            importer = AssetImporter.GetAtPath(path) as TextureImporter;
-            format = GetTextureFormat();
-            RT_format = GetRenderTextureFormat();
-            formatString = format != null ? format.ToString() : RT_format != null ? RT_format.ToString() : "";
-            hasAlpha = getHasAlpha();
-            BPP = getBPP();
-            minBPP = getMinBPP();
-            size = getSize();
-            sizeString = ToMebiByteString(size);
-            pcResolution = GetMaxResolution("PC");
-            androidResolution = GetMaxResolution("Android");
-            textureWithChangableResolution = importer != null && !isPoiyomi;
-            textureWithChangableFormat = getTextureHasChangableFormat();
-            betterTextureFormat = getBetterFormat();
-            savedSizeWithBetterTextureFormat = getSavedSizeString();
-            textureTooBig = importer != null && pcResolution > 2048;
-            saveSizeWithSmallerTexture = ToShortMebiByteString(size - TextureToBytesUsingBPP(texture, BPP, 2048f / pcResolution));
-            bestTextureFormat = getTheBestFormat();
         }
 
         public void ChangeImportSize(int size)
         {
-            if (textureWithChangableResolution)
+            if (TextureWithChangableResolution)
             {
-                TextureImporterPlatformSettings settings = importer.GetPlatformTextureSettings("PC");
-                importer.maxTextureSize = size;
+                TextureImporterPlatformSettings settings = Importer.GetPlatformTextureSettings("PC");
+                Importer.maxTextureSize = size;
                 settings.maxTextureSize = size;
-                importer.SetPlatformTextureSettings(settings);
-                importer.SaveAndReimport();
+                Importer.SetPlatformTextureSettings(settings);
+                Importer.SaveAndReimport();
             }
         }
 
         public void ChangeImportSizeAndroid(int size)
         {
-            if (textureWithChangableResolution)
+            if (TextureWithChangableResolution)
             {
-                TextureImporterPlatformSettings settings = importer.GetPlatformTextureSettings("Android");
+                TextureImporterPlatformSettings settings = Importer.GetPlatformTextureSettings("Android");
                 settings.maxTextureSize = size;
                 settings.overridden = true;
-                importer.SetPlatformTextureSettings(settings);
-                importer.SaveAndReimport();
+                Importer.SetPlatformTextureSettings(settings);
+                Importer.SaveAndReimport();
             }
-
-
         }
 
         public void ChangeImporterFormat(TextureImporterFormat format)
         {
-            if (textureWithChangableFormat)
+            if (TextureWithChangableFormat)
             {
-                TextureImporterPlatformSettings settings = importer.GetPlatformTextureSettings("PC");
-                TextureImporterPlatformSettings settingsA = importer.GetPlatformTextureSettings("Android");
+                TextureImporterPlatformSettings settings = Importer.GetPlatformTextureSettings("PC");
+                TextureImporterPlatformSettings settingsA = Importer.GetPlatformTextureSettings("Android");
 
                 settings.overridden = (int)format != -1;
                 settings.format = format;
@@ -100,16 +75,16 @@ namespace Azzmurr.Utils
                 settingsA.format = format;
                 settingsA.compressionQuality = 100;
 
-                importer.SetPlatformTextureSettings(settings);
-                importer.SetPlatformTextureSettings(settingsA);
+                Importer.SetPlatformTextureSettings(settings);
+                Importer.SetPlatformTextureSettings(settingsA);
 
-                importer.SaveAndReimport();
+                Importer.SaveAndReimport();
             }
         }
 
         private TextureImporterFormat? getBetterFormat()
         {
-            if (textureWithChangableFormat && BPP > minBPP)
+            if (TextureWithChangableFormat && BPP > MinBPP)
             {
                 return getTheBestFormat();
             }
@@ -119,9 +94,9 @@ namespace Azzmurr.Utils
 
         private TextureImporterFormat? getTheBestFormat()
         {
-            if (textureWithChangableFormat)
+            if (TextureWithChangableFormat)
             {
-                return hasAlpha || importer.textureType == TextureImporterType.NormalMap ? TextureImporterFormat.DXT5Crunched : TextureImporterFormat.DXT1Crunched;
+                return HasAlpha || Importer.textureType == TextureImporterType.NormalMap ? TextureImporterFormat.DXT5Crunched : TextureImporterFormat.DXT1Crunched;
             }
 
             return null;
@@ -129,9 +104,9 @@ namespace Azzmurr.Utils
 
         private string getSavedSizeString()
         {
-            if (betterTextureFormat != null)
+            if (BetterTextureFormat != null)
             {
-                return ToShortMebiByteString(size - TextureToBytesUsingBPP(texture, BPPConfig.BPP[(TextureFormat)betterTextureFormat]));
+                return ToShortMebiByteString(Size - TextureToBytesUsingBPP(texture, BPPConfig.BPP[(TextureFormat)BetterTextureFormat]));
             }
 
             return "";
@@ -139,9 +114,9 @@ namespace Azzmurr.Utils
 
         private int GetMaxResolution(string platform)
         {
-            if (importer)
+            if (Importer)
             {
-                return importer.GetPlatformTextureSettings(platform).overridden ? importer.GetPlatformTextureSettings(platform).maxTextureSize : importer.GetDefaultPlatformTextureSettings().maxTextureSize;
+                return Importer.GetPlatformTextureSettings(platform).overridden ? Importer.GetPlatformTextureSettings(platform).maxTextureSize : Importer.GetDefaultPlatformTextureSettings().maxTextureSize;
             }
 
             return 0;
@@ -163,9 +138,9 @@ namespace Azzmurr.Utils
 
         private float getBPP() => texture switch
         {
-            Texture2D => BPPConfig.BPP.GetValueOrDefault((TextureFormat)format, 16),
-            Texture2DArray => BPPConfig.BPP.GetValueOrDefault((TextureFormat)format, 16),
-            Cubemap => BPPConfig.BPP.GetValueOrDefault((TextureFormat)format, 16),
+            Texture2D => BPPConfig.BPP.GetValueOrDefault((TextureFormat)Format, 16),
+            Texture2DArray => BPPConfig.BPP.GetValueOrDefault((TextureFormat)Format, 16),
+            Cubemap => BPPConfig.BPP.GetValueOrDefault((TextureFormat)Format, 16),
             RenderTexture => BPPConfig.RT_BPP.GetValueOrDefault((RenderTextureFormat)RT_format, 16) + ((RenderTexture)texture).depth,
             _ => 16,
         };
@@ -181,20 +156,20 @@ namespace Azzmurr.Utils
 
         private Boolean getHasAlpha() => texture switch
         {
-            Texture2D => importer != null ? importer.DoesSourceTextureHaveAlpha() : false,
+            Texture2D => Importer != null ? Importer.DoesSourceTextureHaveAlpha() : false,
             RenderTexture => RT_format == RenderTextureFormat.ARGB32 || RT_format == RenderTextureFormat.ARGBHalf || RT_format == RenderTextureFormat.ARGBFloat,
             _ => false,
         };
 
         private int getMinBPP() => texture switch
         {
-            Texture2D => (hasAlpha || importer != null && importer.textureType == TextureImporterType.NormalMap) ? 8 : 4,
+            Texture2D => (HasAlpha || Importer != null && Importer.textureType == TextureImporterType.NormalMap) ? 8 : 4,
             _ => 8,
         };
 
         private bool getTextureHasChangableFormat() => texture switch
         {
-            Texture2D => !isPoiyomi && importer != null && importer.textureType != TextureImporterType.SingleChannel && formatString.Length > 0,
+            Texture2D => !Poiyomi && Importer != null && Importer.textureType != TextureImporterType.SingleChannel && FormatString.Length > 0,
             _ => false,
         };
 
