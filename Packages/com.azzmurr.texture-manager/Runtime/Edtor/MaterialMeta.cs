@@ -24,16 +24,18 @@ namespace Azzmurr.Utils
 
         public bool Goo => Shader.name.Contains(".ValueFactory");
 
-        public bool Locked => Shader.name.Contains("Hidden");
+        public bool ShaderLocked => Shader.name.Contains("Hidden");
 
         public string ShaderName
         {
             get
             {
-                if (Locked) return Shader.name.Split("/")[^2];
+                if (ShaderLocked) return Shader.name.Split("/")[^2];
                 return Shader.name.Split("/")[^1];
             }
         }
+
+        public bool ShaderLockedError => !Standard && !ShaderLocked;
 
         public string ShaderVersion
         {
@@ -67,6 +69,7 @@ namespace Azzmurr.Utils
             }
         }
 
+        public bool ShaderVersionError => Poiyomi && ShaderVersion != "Latest";
         public MaterialMeta(Material material)
         {
             this.material = material;

@@ -41,6 +41,10 @@ namespace Azzmurr.Utils
         Vector2 MainScrollPosition;
         GUIContent RefreshIcon;
 
+        GUIStyle label;
+        GUIStyle validLabel;
+        GUIStyle invalidLabel;
+
         private void OnEnable()
         {
             RefreshIcon = EditorGUIUtility.IconContent("RotateTool On", "Recalculate");
@@ -48,6 +52,14 @@ namespace Azzmurr.Utils
 
         private void OnGUI()
         {
+            label = new GUIStyle(EditorStyles.label);
+
+            validLabel = new GUIStyle(EditorStyles.label);
+            validLabel.normal.textColor = Color.green;
+
+            invalidLabel = new GUIStyle(EditorStyles.label);
+            invalidLabel.normal.textColor = Color.red;
+
             EditorGUILayout.LabelField("Input", EditorStyles.boldLabel);
             EditorGUI.BeginChangeCheck();
 
@@ -86,7 +98,7 @@ namespace Azzmurr.Utils
                                 }
                             });
 
-                            ActionGrid.Cell((index) => GUILayout.Label("I do not work for now :("));
+                            ActionGrid.Cell((index) => GUILayout.Label("I do not work for now :(", label));
                         }
 
                         GUILine();
@@ -96,9 +108,9 @@ namespace Azzmurr.Utils
 
                         using (ResultsGrid)
                         {
-                            ResultsGrid.Cell((index) => GUILayout.Label("Preview"));
-                            ResultsGrid.Cell((index) => GUILayout.Label("Info"));
-                            ResultsGrid.Cell((index) => GUILayout.Label("Textures"));
+                            ResultsGrid.Cell((index) => GUILayout.Label("Preview", label));
+                            ResultsGrid.Cell((index) => GUILayout.Label("Info", label));
+                            ResultsGrid.Cell((index) => GUILayout.Label("Textures", label));
 
 
                             Avatar.ForeachMaterial((material) =>
@@ -115,9 +127,9 @@ namespace Azzmurr.Utils
                                     using (new EditorGUILayout.VerticalScope())
                                     {
                                         EditorGUILayout.ObjectField(material.Material, typeof(Material), false);
-                                        GUILayout.Label($"Is locked - {material.Locked}");
-                                        GUILayout.Label($"Shader - {material.ShaderName}");
-                                        GUILayout.Label($"Version - {material.ShaderVersion}");
+                                        GUILayout.Label($"Shader - {material.ShaderName}", label);
+                                        GUILayout.Label($"Locked - {material.ShaderLocked}", material.ShaderLockedError ? invalidLabel : validLabel);
+                                        GUILayout.Label($"Version - {material.ShaderVersion}", material.ShaderVersionError ? invalidLabel : validLabel);
                                     }
                                 });
 
