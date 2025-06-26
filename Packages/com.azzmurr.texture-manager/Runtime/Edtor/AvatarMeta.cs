@@ -100,6 +100,7 @@ namespace Azzmurr.Utils
             }
 
             List<MaterialMeta> materialMetas = materialsAll
+                .ToHashSet()
                 .ToList()
                 .ConvertAll((material) => new MaterialMeta(material));
 
