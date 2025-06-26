@@ -128,8 +128,8 @@ namespace Azzmurr.Utils
                                     {
                                         EditorGUILayout.ObjectField(material.Material, typeof(Material), false);
                                         GUILayout.Label($"Shader - {material.ShaderName}", label);
-                                        GUILayout.Label($"Locked - {material.ShaderLocked}", material.ShaderLockedError ? invalidLabel : validLabel);
-                                        GUILayout.Label($"Version - {material.ShaderVersion}", material.ShaderVersionError ? invalidLabel : validLabel);
+                                        GUILayout.Label($"Locked - {material.ShaderLockedString}", material.ShaderLockedError == null ? label : material.ShaderLockedError == true ? invalidLabel : validLabel);
+                                        GUILayout.Label($"Version - {material.ShaderVersion}", material.ShaderVersionError == null ? label : material.ShaderVersionError == true ? invalidLabel : validLabel);
                                     }
                                 });
 

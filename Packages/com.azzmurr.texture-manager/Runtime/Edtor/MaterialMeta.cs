@@ -26,6 +26,15 @@ namespace Azzmurr.Utils
 
         public bool ShaderLocked => Shader.name.Contains("Hidden");
 
+        public string ShaderLockedString
+        {
+            get
+            {
+                if (Standard) return "---";
+                return Shader.name.Contains("Hidden").ToString(); 
+            }
+        }
+
         public string ShaderName
         {
             get
@@ -35,7 +44,7 @@ namespace Azzmurr.Utils
             }
         }
 
-        public bool ShaderLockedError => !Standard && !ShaderLocked;
+        public bool? ShaderLockedError => !Standard ? !ShaderLocked : null;
 
         public string ShaderVersion
         {
@@ -43,7 +52,7 @@ namespace Azzmurr.Utils
             {
                 if (Standard)
                 {
-                    return "Latest";
+                    return "---";
                 }
 
                 if (Poiyomi)
@@ -69,7 +78,7 @@ namespace Azzmurr.Utils
             }
         }
 
-        public bool ShaderVersionError => Poiyomi && ShaderVersion != "Latest";
+        public bool? ShaderVersionError => Poiyomi ? ShaderVersion != "Latest" : null;
         public MaterialMeta(Material material)
         {
             this.material = material;
