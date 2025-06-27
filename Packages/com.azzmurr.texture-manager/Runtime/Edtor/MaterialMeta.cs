@@ -9,7 +9,7 @@ namespace Azzmurr.Utils
     class MaterialMeta
     {
         readonly private Material material;
-        readonly private IEnumerable<TextureMeta> textures;
+        private IEnumerable<TextureMeta> Textures => GetTextures();
 
         public string Name => material.name;
 
@@ -21,9 +21,17 @@ namespace Azzmurr.Utils
 
         public bool Standard => Shader.name == "Standard";
 
+        public bool StandardLite => Shader.name == "VRChat/Mobile/Standard Lite";
+
+        public bool ToonStandard => Shader.name == "VRChat/Mobile/Toon Standard";
+
+        public bool ToonLit => Shader.name == "VRChat/Mobile/Toon Lit";
+
         public bool FastFur => Shader.name.Contains("Fast Fur");
 
         public bool Goo => Shader.name.Contains(".ValueFactory");
+
+        public bool NotLockable => ShaderVersion == "Unknown" || Standard || StandardLite || ToonStandard || ToonLit;
 
         public bool ShaderLocked => Shader.name.Contains("Hidden");
 
@@ -31,7 +39,7 @@ namespace Azzmurr.Utils
         {
             get
             {
-                if (Standard) return "---";
+                if (NotLockable) return "---";
                 return Shader.name.Contains("Hidden").ToString();
             }
         }
@@ -45,13 +53,13 @@ namespace Azzmurr.Utils
             }
         }
 
-        public bool? ShaderLockedError => !Standard ? !ShaderLocked : null;
+        public bool? ShaderLockedError => !NotLockable ? !ShaderLocked : null;
 
         public string ShaderVersion
         {
             get
             {
-                if (Standard)
+                if (Standard || StandardLite || ToonStandard || ToonLit)
                 {
                     return "---";
                 }
@@ -83,12 +91,11 @@ namespace Azzmurr.Utils
         public MaterialMeta(Material material)
         {
             this.material = material;
-            textures = GetTextures();
         }
 
         public void ForeachTexture(Action<TextureMeta> action)
         {
-            foreach (TextureMeta texture in textures)
+            foreach (TextureMeta texture in Textures)
             {
                 action.Invoke(texture);
             }
@@ -97,7 +104,7 @@ namespace Azzmurr.Utils
         public Material getQuestMaterial()
         {
             Material newQuestMaterial = new Material(material);
-            newQuestMaterial.shader = Shader.Find("VRChat/Mobile/Standard Lite");
+            newQuestMaterial.shader = Shader.Find("VRChat/Mobile/Toon Standard");
             return newQuestMaterial;
         }
 
@@ -106,7 +113,6 @@ namespace Azzmurr.Utils
             HashSet<Texture> textures = new HashSet<Texture>();
             int[] textureIds = material.GetTexturePropertyNameIDs();
             string[] textureNames = material.GetTexturePropertyNames();
-            Debug.Log($"Shader Version - {ShaderName}");
 
             foreach (int id in textureIds)
             {

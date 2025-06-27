@@ -26,7 +26,10 @@ namespace Azzmurr.Utils
                 rowOpen = true;
             }
 
-            using (new EditorGUILayout.VerticalScope(GUILayout.Width(columnWidths[currentColumn]))) draw.Invoke(currentColumn);
+            using (new EditorGUILayout.VerticalScope(GUILayout.Width(columnWidths[currentColumn])))
+            {
+                draw.Invoke(currentColumn);
+            }
 
             currentColumn++;
 

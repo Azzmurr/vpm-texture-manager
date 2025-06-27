@@ -127,7 +127,7 @@ namespace Azzmurr.Utils
                     if (material != null)
                     {
                         Material newQuestMaterial = material.getQuestMaterial();
-                        AssetDatabase.CreateAsset(newQuestMaterial, $"Assets/Quest Materials/{scene.name.Trim()}/{Name.Trim()}/{material.Name}.mat");
+                        AssetDatabase.CreateAsset(newQuestMaterial, $"Assets/Quest Materials/{scene.name.Trim()}/{Name.Trim()}/Quest {material.Name}.mat");
 
                     }
                 });

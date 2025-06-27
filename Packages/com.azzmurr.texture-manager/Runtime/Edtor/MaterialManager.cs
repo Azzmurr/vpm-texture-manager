@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,9 +39,22 @@ namespace Azzmurr.Utils
         Vector2 MainScrollPosition;
         GUIContent RefreshIcon;
 
+        bool MoreTextureInfo = false;
+
         GUIStyle label;
         GUIStyle validLabel;
         GUIStyle invalidLabel;
+
+        int[] _textureSizeOptions = new int[] { 0, 128, 256, 512, 1024, 2048, 4096, 8192 };
+        TextureImporterFormat[] _compressionFormatOptions = new TextureImporterFormat[]{
+            TextureImporterFormat.Automatic,
+            TextureImporterFormat.Automatic,
+            TextureImporterFormat.BC7,
+            TextureImporterFormat.DXT1,
+            TextureImporterFormat.DXT5,
+            TextureImporterFormat.DXT1Crunched,
+            TextureImporterFormat.DXT5Crunched,
+        };
 
         private void OnEnable()
         {
@@ -83,9 +97,7 @@ namespace Azzmurr.Utils
 
                     if (Avatar.MaterialsCount > 0)
                     {
-                        VariableGridScope ActionGrid = new(new float[] { 200, 200 });
-
-                        using (ActionGrid)
+                        using (var ActionGrid = new VariableGridScope(new float[] { 200, 200 }))
                         {
                             ActionGrid.Cell((index) =>
                             {
@@ -122,13 +134,21 @@ namespace Azzmurr.Utils
                         GUILine();
                         EditorGUILayout.Space();
 
-                        VariableGridScope ResultsGrid = new(new float[] { 72, 200, 200 });
-
-                        using (ResultsGrid)
+                        using (var ResultsGrid = new VariableGridScope(new float[] { 72, 200, 1 }, 8))
                         {
                             ResultsGrid.Cell((index) => GUILayout.Label("Preview", label));
                             ResultsGrid.Cell((index) => GUILayout.Label("Info", label));
-                            ResultsGrid.Cell((index) => GUILayout.Label("Textures", label));
+                            ResultsGrid.Cell((index) =>
+                            {
+                                using (new EditorGUILayout.HorizontalScope())
+                                {
+                                    GUILayout.Label("Textures", label);
+                                    if (GUILayout.Button(MoreTextureInfo ? "Less Info" : "More Info"))
+                                    {
+                                        MoreTextureInfo = !MoreTextureInfo;
+                                    }
+                                }
+                            });
 
 
                             Avatar.ForeachMaterial((material) =>
@@ -137,17 +157,20 @@ namespace Azzmurr.Utils
                                 {
                                     Texture2D preview = AssetPreview.GetAssetPreview(material.Material);
                                     EditorGUILayout.ObjectField(GUIContent.none, preview, typeof(Texture2D), false, GUILayout.Width(72), GUILayout.Height(72));
-
                                 });
 
                                 ResultsGrid.Cell((index) =>
                                 {
-                                    using (new EditorGUILayout.VerticalScope())
+                                    EditorGUILayout.ObjectField(material.Material, typeof(Material), false);
+                                    EditorGUILayout.Space();
+                                    using (var MaterialInfoGrid = new VariableGridScope(new float[] { 20, 50 }))
                                     {
-                                        EditorGUILayout.ObjectField(material.Material, typeof(Material), false);
-                                        GUILayout.Label($"Shader - {material.ShaderName}", label);
-                                        GUILayout.Label($"Locked - {material.ShaderLockedString}", material.ShaderLockedError == null ? label : material.ShaderLockedError == true ? invalidLabel : validLabel);
-                                        GUILayout.Label($"Version - {material.ShaderVersion}", material.ShaderVersionError == null ? label : material.ShaderVersionError == true ? invalidLabel : validLabel);
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Shader:", label));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderName, label));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Locked:", label));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderLockedString, material.ShaderLockedError == null ? label : material.ShaderLockedError == true ? invalidLabel : validLabel));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Version:", label));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderVersion, material.ShaderVersionError == null ? label : material.ShaderVersionError == true ? invalidLabel : validLabel));
                                     }
                                 });
 
@@ -157,7 +180,81 @@ namespace Azzmurr.Utils
                                     {
                                         material.ForeachTexture((texture) =>
                                         {
-                                            EditorGUILayout.ObjectField(GUIContent.none, texture.texture, typeof(Texture), false, GUILayout.Width(72), GUILayout.Height(72));
+                                            EditorGUILayout.Space();
+                                            using (new EditorGUILayout.HorizontalScope())
+                                            {
+                                                EditorGUILayout.ObjectField(GUIContent.none, texture.texture, typeof(Texture), false, GUILayout.Width(72), GUILayout.Height(72));
+
+                                                if (MoreTextureInfo)
+                                                {
+                                                    using (new EditorGUILayout.VerticalScope())
+                                                    {
+                                                        using (var TextureSActions = new VariableGridScope(new float[] { 50, 100 }))
+                                                        {
+                                                            TextureSActions.Cell((index) => GUILayout.Label("PC:", label));
+                                                            TextureSActions.Cell((index) =>
+                                                            {
+                                                                if (texture.TextureWithChangableResolution)
+                                                                {
+                                                                    _textureSizeOptions[0] = texture.PcResolution;
+                                                                    int newResolution = EditorGUILayout.IntPopup(texture.PcResolution, _textureSizeOptions.Select(x => x.ToString()).ToArray(), _textureSizeOptions);
+                                                                    if (newResolution != texture.PcResolution)
+                                                                    {
+                                                                        texture.ChangeImportSize(newResolution);
+                                                                        Avatar.Recalculate();
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    GUILayout.Label(texture.PcResolution.ToString());
+                                                                }
+                                                            });
+
+                                                            TextureSActions.Cell((index) => GUILayout.Label("Android:", label));
+                                                            TextureSActions.Cell((ANDROID) =>
+                                                            {
+                                                                if (texture.TextureWithChangableResolution)
+                                                                {
+                                                                    _textureSizeOptions[0] = texture.AndroidResolution;
+                                                                    int newResolutionAndroid = EditorGUILayout.IntPopup(texture.AndroidResolution, _textureSizeOptions.Select(x => x.ToString()).ToArray(), _textureSizeOptions);
+                                                                    if (newResolutionAndroid != texture.AndroidResolution)
+                                                                    {
+                                                                        texture.ChangeImportSizeAndroid(newResolutionAndroid);
+                                                                        Avatar.Recalculate();
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    GUILayout.Label(texture.AndroidResolution.ToString());
+                                                                }
+                                                            });
+
+                                                            TextureSActions.Cell((index) => GUILayout.Label("Format:", label));
+                                                            TextureSActions.Cell((Format) =>
+                                                            {
+                                                                if (texture.FormatString.Length > 0)
+                                                                {
+                                                                    if (texture.TextureWithChangableFormat)
+                                                                    {
+                                                                        _compressionFormatOptions[0] = ((TextureImporterFormat)texture.Format);
+                                                                        int newFormat = EditorGUILayout.Popup(0, _compressionFormatOptions.Select(x => x.ToString()).ToArray());
+                                                                        if (newFormat != 0)
+                                                                        {
+                                                                            texture.ChangeImporterFormat(_compressionFormatOptions[newFormat]);
+                                                                            Avatar.Recalculate();
+                                                                        }
+                                                                    }
+
+                                                                    else
+                                                                    {
+                                                                        GUILayout.Label(texture.Format.ToString());
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         });
                                     }
 
