@@ -1,9 +1,6 @@
-using System;
-using System.IO;
-using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Azzmurr.Utils
 {
@@ -92,13 +89,34 @@ namespace Azzmurr.Utils
                         {
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Update poiyomi to latest version"))
-                                {
-
-                                }
+                                if (GUILayout.Button("Update poiyomi to latest version")) Debug.Log("FFFFFFFFFFFFFFF");
                             });
 
                             ActionGrid.Cell((index) => GUILayout.Label("I do not work for now :(", label));
+
+                            ActionGrid.Cell((index) =>
+                            {
+                                if (GUILayout.Button("Textures max size -> 2k")) Avatar.MakeAllTextures2k();
+                            });
+                            ActionGrid.Cell((index) => GUILayout.Label("Makes max texture size 2k"));
+
+                            ActionGrid.Cell((index) =>
+                            {
+                                if (GUILayout.Button("Prepare textures for Android")) Avatar.MakeTexturesReadyForAndroid();
+                            });
+                            ActionGrid.Cell((index) => GUILayout.Label("Makes max texture for android half size of PC size"));
+
+                            ActionGrid.Cell((index) =>
+                            {
+                                if (GUILayout.Button("Crunch textures")) Avatar.CrunchTextures();
+                            });
+                            ActionGrid.Cell((index) => GUILayout.Label("Sets texture format to DTX1Crunched or DTX5Crunched"));
+
+                            ActionGrid.Cell((index) =>
+                            {
+                                if (GUILayout.Button("Create Quest Material Presets")) Avatar.CreateQuestMaterialPresets();
+                            });
+                            ActionGrid.Cell((index) => GUILayout.Label("This will create quest materilas with VRChat/Mobile/Standard Lite shader"));
                         }
 
                         GUILine();
@@ -164,3 +182,4 @@ namespace Azzmurr.Utils
         }
     }
 }
+#endif

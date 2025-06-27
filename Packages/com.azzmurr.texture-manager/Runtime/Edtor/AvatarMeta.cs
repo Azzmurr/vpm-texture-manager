@@ -5,6 +5,8 @@ using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 using System;
 using HarmonyLib;
+using System.IO;
+using UnityEngine.SceneManagement;
 
 namespace Azzmurr.Utils
 {
@@ -65,6 +67,69 @@ namespace Azzmurr.Utils
                 {
                     action.Invoke(material);
                 }
+            }
+        }
+
+        public void MakeAllTextures2k()
+        {
+            ForeachTexture((texture) =>
+            {
+                if (texture.PcResolution > 2048) texture.ChangeImportSize(2048);
+            });
+        }
+
+        public void MakeTexturesReadyForAndroid()
+        {
+            ForeachTexture((texture) =>
+            {
+                if (texture.AndroidResolution > texture.PcResolution / 2 && texture.PcResolution > 512)
+                {
+                    texture.ChangeImportSizeAndroid(texture.PcResolution / 2);
+                }
+            });
+        }
+
+        public void CrunchTextures()
+        {
+            ForeachTexture((texture) =>
+            {
+                if (texture.BestTextureFormat != null && (TextureImporterFormat)texture.Format != texture.BestTextureFormat)
+                {
+                    texture.ChangeImporterFormat((TextureImporterFormat)texture.BestTextureFormat);
+                }
+            });
+        }
+
+        public void CreateQuestMaterialPresets()
+        {
+            Scene scene = SceneManager.GetActiveScene();
+
+            if (EditorUtility.DisplayDialog("Create Quest Materials", $"You are going to create Quest materials with changed shader to VRChat/Mobile/Standard in Assets/Quest Materials/{scene.name}/{Name}.", "Yes let's do this!", "Naaah, I just hanging around"))
+            {
+                if (!Directory.Exists("Assets/Quest Materials"))
+                {
+                    Directory.CreateDirectory("Assets/Quest Materials");
+                }
+
+                if (!Directory.Exists($"Assets/Quest Materials/{scene.name.Trim()}"))
+                {
+                    Directory.CreateDirectory($"Assets/Quest Materials/{scene.name.Trim()}");
+                }
+
+                if (!Directory.Exists($"Assets/Quest Materials/{scene.name.Trim()}/{Name.Trim()}"))
+                {
+                    Directory.CreateDirectory($"Assets/Quest Materials/{scene.name.Trim()}/{Name.Trim()}");
+                }
+
+                ForeachMaterial((material) =>
+                {
+                    if (material != null)
+                    {
+                        Material newQuestMaterial = material.getQuestMaterial();
+                        AssetDatabase.CreateAsset(newQuestMaterial, $"Assets/Quest Materials/{scene.name.Trim()}/{Name.Trim()}/{material.Name}.mat");
+
+                    }
+                });
             }
         }
 

@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿#if UNITY_EDITOR
+using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Azzmurr.Utils
 {
@@ -85,89 +84,32 @@ namespace Azzmurr.Utils
                     EditorGUILayout.Space();
                     if (Avatar.TextureCount != 0)
                     {
-                        VariableGridScope Grid = new(new float[] { 200, 200 });
-                        using (Grid)
+                        VariableGridScope ActionGrid = new(new float[] { 200, 200 });
+                        using (ActionGrid)
                         {
-                            Grid.Cell((index) =>
+                            ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Textures max size -> 2k"))
-                                {
-                                    Avatar.ForeachTexture((texture) =>
-                                    {
-                                        if (texture.PcResolution > 2048) texture.ChangeImportSize(2048);
-                                    });
-                                }
+                                if (GUILayout.Button("Textures max size -> 2k")) Avatar.MakeAllTextures2k();
                             });
-                            Grid.Cell((index) => GUILayout.Label("Makes max texture size 2k"));
+                            ActionGrid.Cell((index) => GUILayout.Label("Makes max texture size 2k"));
 
-
-
-                            Grid.Cell((index) =>
+                            ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Prepare textures for Android"))
-                                {
-                                    Avatar.ForeachTexture((texture) =>
-                                    {
-                                        if (texture.AndroidResolution > texture.PcResolution / 2 && texture.PcResolution > 512)
-                                        {
-                                            texture.ChangeImportSizeAndroid(texture.PcResolution / 2);
-                                        }
-                                    });
-                                }
+                                if (GUILayout.Button("Prepare textures for Android")) Avatar.MakeTexturesReadyForAndroid();
                             });
-                            Grid.Cell((index) => GUILayout.Label("Makes max texture for android half size of PC size"));
+                            ActionGrid.Cell((index) => GUILayout.Label("Makes max texture for android half size of PC size"));
 
-                            Grid.Cell((index) =>
+                            ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Crunch textures"))
-                                {
-                                    Avatar.ForeachTexture((texture) =>
-                                    {
-                                        if (texture.BestTextureFormat != null && (TextureImporterFormat)texture.Format != texture.BestTextureFormat)
-                                        {
-                                            texture.ChangeImporterFormat((TextureImporterFormat)texture.BestTextureFormat);
-                                        }
-                                    });
-                                }
+                                if (GUILayout.Button("Crunch textures")) Avatar.CrunchTextures();
                             });
-                            Grid.Cell((index) => GUILayout.Label("Sets texture format to DTX1Crunched or DTX5Crunched"));
+                            ActionGrid.Cell((index) => GUILayout.Label("Sets texture format to DTX1Crunched or DTX5Crunched"));
 
-                            Boolean createQuestMaterialPresets = false;
-                            Grid.Cell((index) => createQuestMaterialPresets = GUILayout.Button("Create Quest Material Presets"));
-                            Grid.Cell((index) => GUILayout.Label("This will create quest materilas with VRChat/Mobile/Standard Lite shader"));
-
-                            if (createQuestMaterialPresets)
+                            ActionGrid.Cell((index) =>
                             {
-                                Scene scene = SceneManager.GetActiveScene();
-
-                                if (EditorUtility.DisplayDialog("Create Quest Materials", $"You are going to create Quest materials with changed shader to VRChat/Mobile/Standard in Assets/Quest Materials/{scene.name}/{Avatar.Name}.", "Yes let's do this!", "Naaah, I just hanging around"))
-                                {
-                                    if (!Directory.Exists("Assets/Quest Materials"))
-                                    {
-                                        Directory.CreateDirectory("Assets/Quest Materials");
-                                    }
-
-                                    if (!Directory.Exists($"Assets/Quest Materials/{scene.name.Trim()}"))
-                                    {
-                                        Directory.CreateDirectory($"Assets/Quest Materials/{scene.name.Trim()}");
-                                    }
-
-                                    if (!Directory.Exists($"Assets/Quest Materials/{scene.name.Trim()}/{Avatar.Name.Trim()}"))
-                                    {
-                                        Directory.CreateDirectory($"Assets/Quest Materials/{scene.name.Trim()}/{Avatar.Name.Trim()}");
-                                    }
-
-                                    Avatar.ForeachMaterial((material) =>
-                                    {
-                                        if (material != null)
-                                        {
-                                            Material newQuestMaterial = material.getQuestMaterial();
-                                            AssetDatabase.CreateAsset(newQuestMaterial, $"Assets/Quest Materials/{scene.name.Trim()}/{Avatar.Name.Trim()}/{material.Name}.mat");
-
-                                        }
-                                    });
-                                }
-                            }
+                                if (GUILayout.Button("Create Quest Material Presets")) Avatar.CreateQuestMaterialPresets();
+                            });
+                            ActionGrid.Cell((index) => GUILayout.Label("This will create quest materilas with VRChat/Mobile/Standard Lite shader"));
                         }
 
 
@@ -325,3 +267,4 @@ namespace Azzmurr.Utils
         }
     }
 }
+#endif
