@@ -100,15 +100,39 @@ namespace Azzmurr.Utils
                         {
                             ActionGrid.Cell((index) =>
                             {
+                                if (GUILayout.Button("Unlock Poiyomi materials"))
+                                {
+                                    Avatar.UnlockMaterials();
+                                    Avatar.Recalculate();
+                                }
+                                                            ;
+                            });
+
+                            ActionGrid.Cell((index) => GUILayout.Label("It will unlock materials", label));
+
+                            ActionGrid.Cell((index) =>
+                            {
                                 if (GUILayout.Button("Update Poiyomi materials"))
                                 {
-                                    Avatar.UpdatePoiMaterials();
+                                    Avatar.UpdateMaterials();
                                     Avatar.Recalculate();
                                 }
                                 ;
                             });
 
-                            ActionGrid.Cell((index) => GUILayout.Label("It will unlock and update materials", label));
+                            ActionGrid.Cell((index) => GUILayout.Label("It will update unlocked materials", label));
+
+                            ActionGrid.Cell((index) =>
+                            {
+                                if (GUILayout.Button("Lock Poiyomi materials"))
+                                {
+                                    Avatar.LockMaterials();
+                                    Avatar.Recalculate();
+                                }
+                                ;
+                            });
+
+                            ActionGrid.Cell((index) => GUILayout.Label("It will lock materials", label));
 
                             ActionGrid.Cell((index) =>
                             {

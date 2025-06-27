@@ -134,14 +134,26 @@ namespace Azzmurr.Utils
             }
         }
 
-        public void UpdatePoiMaterials()
+        public void UnlockMaterials()
         {
-            List<Material> poi = materials.Where((meta) => meta.Poiyomi && meta.ShaderVersion != "Latest").ToList().ConvertAll((meta) => meta.Material);
+            List<Material> poi = materials.Where((meta) => meta.Poiyomi).ToList().ConvertAll((meta) => meta.Material);
             ShaderOptimizer.UnlockMaterials(poi);
+        }
+
+        public void UpdateMaterials()
+        {
+            List<Material> poi = materials.Where((meta) => meta.Poiyomi && !meta.ShaderLocked).ToList().ConvertAll((meta) => meta.Material);
             poi.ForEach((mat) =>
             {
                 mat.shader = Shader.Find(".poiyomi/Poiyomi Pro");
             });
+        }
+
+        public void LockMaterials()
+        {
+            List<Material> poi = materials.Where((meta) => meta.Poiyomi).ToList().ConvertAll((meta) => meta.Material);
+            ShaderOptimizer.LockMaterials(poi);
+
         }
 
         private IEnumerable<MaterialMeta> GetMaterials()
