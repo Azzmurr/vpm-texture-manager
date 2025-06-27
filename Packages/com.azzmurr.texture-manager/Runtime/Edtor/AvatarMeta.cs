@@ -163,7 +163,7 @@ namespace Azzmurr.Utils
                 .Where(renderer => renderer.gameObject.GetComponentsInParent<Transform>(true)
                 .All(transform => transform.tag != "EditorOnly"));
 
-            List<Material> materialsAll = allBuiltRenderers.SelectMany(r => r.sharedMaterials).ToList();
+            List<Material> materialsAll = allBuiltRenderers.SelectMany(r => r.sharedMaterials).Where((material) => material != null).ToList();
             VRCAvatarDescriptor descriptor = avatarObject.GetComponent<VRCAvatarDescriptor>();
 
             if (descriptor != null)
