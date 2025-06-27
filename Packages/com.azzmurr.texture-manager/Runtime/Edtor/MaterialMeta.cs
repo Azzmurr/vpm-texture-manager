@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Azzmurr.Utils
             get
             {
                 if (Standard) return "---";
-                return Shader.name.Contains("Hidden").ToString(); 
+                return Shader.name.Contains("Hidden").ToString();
             }
         }
 
@@ -120,3 +121,4 @@ namespace Azzmurr.Utils
         }
     }
 }
+#endif

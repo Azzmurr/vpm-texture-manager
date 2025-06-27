@@ -1,7 +1,8 @@
+#if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine;
- 
+
 namespace Azzmurr.Utils
 {
     public class VariableGridScope : IDisposable
@@ -48,3 +49,4 @@ namespace Azzmurr.Utils
         }
     }
 }
+#endif
