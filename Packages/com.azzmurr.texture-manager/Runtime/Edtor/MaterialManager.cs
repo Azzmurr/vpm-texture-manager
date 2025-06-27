@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -101,10 +100,15 @@ namespace Azzmurr.Utils
                         {
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Update poiyomi to latest version")) Debug.Log("FFFFFFFFFFFFFFF");
+                                if (GUILayout.Button("Update Poiyomi materials"))
+                                {
+                                    Avatar.UpdatePoiMaterials();
+                                    Avatar.Recalculate();
+                                }
+                                ;
                             });
 
-                            ActionGrid.Cell((index) => GUILayout.Label("I do not work for now :(", label));
+                            ActionGrid.Cell((index) => GUILayout.Label("It will unlock and update materials", label));
 
                             ActionGrid.Cell((index) =>
                             {
@@ -279,4 +283,3 @@ namespace Azzmurr.Utils
         }
     }
 }
-#endif

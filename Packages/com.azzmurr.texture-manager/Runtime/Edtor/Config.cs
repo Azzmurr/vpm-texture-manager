@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 namespace Azzmurr.Utils
 {
     public class Config
@@ -15,4 +14,3 @@ namespace Azzmurr.Utils
         static public int ACTIONS_WIDTH = 175;
     }
 }
-#endif

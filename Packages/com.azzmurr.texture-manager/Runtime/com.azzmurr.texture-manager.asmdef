@@ -3,11 +3,14 @@
     "rootNamespace": "",
     "references": [
         "VRC.SDK3A",
-        "VRC.SDKBase"
+        "VRC.SDKBase",
+        "ThryAssemblyDefinition"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

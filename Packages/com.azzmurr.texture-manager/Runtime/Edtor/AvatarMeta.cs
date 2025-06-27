@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using System;
 using HarmonyLib;
 using System.IO;
 using UnityEngine.SceneManagement;
+using Thry.ThryEditor;
 
 namespace Azzmurr.Utils
 {
@@ -126,12 +126,22 @@ namespace Azzmurr.Utils
                 {
                     if (material != null)
                     {
-                        Material newQuestMaterial = material.getQuestMaterial();
+                        Material newQuestMaterial = material.GetQuestMaterial();
                         AssetDatabase.CreateAsset(newQuestMaterial, $"Assets/Quest Materials/{scene.name.Trim()}/{Name.Trim()}/Quest {material.Name}.mat");
 
                     }
                 });
             }
+        }
+
+        public void UpdatePoiMaterials()
+        {
+            List<Material> poi = materials.Where((meta) => meta.Poiyomi && meta.ShaderVersion != "Latest").ToList().ConvertAll((meta) => meta.Material);
+            ShaderOptimizer.UnlockMaterials(poi);
+            poi.ForEach((mat) =>
+            {
+                mat.shader = Shader.Find(".poiyomi/Poiyomi Pro");
+            });
         }
 
         private IEnumerable<MaterialMeta> GetMaterials()
@@ -210,4 +220,3 @@ namespace Azzmurr.Utils
         }
     }
 }
-#endif

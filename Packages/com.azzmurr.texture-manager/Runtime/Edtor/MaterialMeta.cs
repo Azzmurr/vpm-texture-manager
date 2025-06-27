@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,7 +100,7 @@ namespace Azzmurr.Utils
             }
         }
 
-        public Material getQuestMaterial()
+        public Material GetQuestMaterial()
         {
             Material newQuestMaterial = new Material(material);
             newQuestMaterial.shader = Shader.Find("VRChat/Mobile/Toon Standard");
@@ -127,4 +126,3 @@ namespace Azzmurr.Utils
         }
     }
 }
-#endif
