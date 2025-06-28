@@ -6,7 +6,7 @@ namespace Azzmurr.Utils
 {
     class MaterialMeneger : EditorWindow
     {
-        [MenuItem("Azzmurr/Avatar/Material Manager")]
+        [MenuItem("Tools/Azzmurr/Material Manager")]
         public static void Init()
         {
             MaterialMeneger window = (MaterialMeneger)EditorWindow.GetWindow(typeof(MaterialMeneger));
@@ -14,10 +14,10 @@ namespace Azzmurr.Utils
             window.Show();
         }
 
-        [MenuItem("GameObject/Azzmurr/Avatar/Material Manager", true, 0)]
+        [MenuItem("GameObject/Azzmurr/Material Manager", true, 0)]
         static bool CanShowFromSelection() => Selection.activeGameObject != null;
 
-        [MenuItem("GameObject/Azzmurr/Avatar/Material Manager", false, 0)]
+        [MenuItem("GameObject/Azzmurr/Material Manager", false, 0)]
         public static void ShowFromSelection()
         {
             MaterialMeneger window = (MaterialMeneger)EditorWindow.GetWindow(typeof(MaterialMeneger));

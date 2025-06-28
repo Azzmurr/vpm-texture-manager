@@ -7,7 +7,7 @@ namespace Azzmurr.Utils
 {
     public class TextureManager : EditorWindow
     {
-        [MenuItem("Azzmurr/Avatar/Texture Manager")]
+        [MenuItem("Tools/Azzmurr/Texture Manager")]
         public static void Init()
         {
             TextureManager window = (TextureManager)EditorWindow.GetWindow(typeof(TextureManager));
@@ -15,10 +15,10 @@ namespace Azzmurr.Utils
             window.Show();
         }
 
-        [MenuItem("GameObject/Azzmurr/Avatar/Texture Manager", true, 0)]
+        [MenuItem("GameObject/Azzmurr/Texture Manager", true, 0)]
         static bool CanShowFromSelection() => Selection.activeGameObject != null;
 
-        [MenuItem("GameObject/Azzmurr/Avatar/Texture Manager", false, 0)]
+        [MenuItem("GameObject/Azzmurr/Texture Manager", false, 0)]
         public static void ShowFromSelection()
         {
             TextureManager window = (TextureManager)EditorWindow.GetWindow(typeof(TextureManager));
