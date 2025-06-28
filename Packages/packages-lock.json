@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.azzmurr.avatar-bootstrap": {
+      "version": "file:com.azzmurr.avatar-bootstrap",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.azzmurr.texture-manager": {
       "version": "file:com.azzmurr.texture-manager",
       "depth": 0,
@@ -216,6 +222,12 @@
     },
     "gay.shader.goo_2": {
       "version": "file:gay.shader.goo_2",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "vrchat.blackstartx.gesture-manager": {
+      "version": "file:vrchat.blackstartx.gesture-manager",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

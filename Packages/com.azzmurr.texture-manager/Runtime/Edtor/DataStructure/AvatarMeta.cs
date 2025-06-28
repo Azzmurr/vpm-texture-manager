@@ -7,7 +7,9 @@ using System;
 using HarmonyLib;
 using System.IO;
 using UnityEngine.SceneManagement;
+#if USE_POI_TRY
 using Thry.ThryEditor;
+#endif
 
 namespace Azzmurr.Utils
 {
@@ -136,24 +138,29 @@ namespace Azzmurr.Utils
 
         public void UnlockMaterials()
         {
+#if USE_POI_TRY
             List<Material> poi = materials.Where((meta) => meta.Poiyomi).ToList().ConvertAll((meta) => meta.Material);
             ShaderOptimizer.UnlockMaterials(poi);
+#endif
         }
 
         public void UpdateMaterials()
         {
+#if USE_POI_TRY
             List<Material> poi = materials.Where((meta) => meta.Poiyomi && !meta.ShaderLocked).ToList().ConvertAll((meta) => meta.Material);
             poi.ForEach((mat) =>
             {
                 mat.shader = Shader.Find(".poiyomi/Poiyomi Pro");
             });
+#endif
         }
 
         public void LockMaterials()
         {
+#if USE_POI_TRY
             List<Material> poi = materials.Where((meta) => meta.Poiyomi).ToList().ConvertAll((meta) => meta.Material);
             ShaderOptimizer.LockMaterials(poi);
-
+#endif
         }
 
         private IEnumerable<MaterialMeta> GetMaterials()

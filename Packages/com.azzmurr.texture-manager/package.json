@@ -1,7 +1,7 @@
 {
   "name": "com.azzmurr.texture-manager",
   "displayName": "Azzmurr - Texture Manager",
-  "version": "1.5.9",
+  "version": "1.5.10",
   "vrchatVersion": "2022.1.1",
   "unity": "2022.3",
   "description": "This package adds some automation for avatar textures",

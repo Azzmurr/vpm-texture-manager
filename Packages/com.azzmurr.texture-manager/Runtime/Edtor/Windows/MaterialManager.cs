@@ -98,6 +98,7 @@ namespace Azzmurr.Utils
                     {
                         using (var ActionGrid = new VariableGridScope(new float[] { 200, 200 }))
                         {
+#if USE_POI_TRY
                             ActionGrid.Cell((index) =>
                             {
                                 if (GUILayout.Button("Unlock Poiyomi materials"))
@@ -133,7 +134,7 @@ namespace Azzmurr.Utils
                             });
 
                             ActionGrid.Cell((index) => GUILayout.Label("It will lock materials", label));
-
+#endif
                             ActionGrid.Cell((index) =>
                             {
                                 if (GUILayout.Button("Textures max size -> 2k")) Avatar.MakeAllTextures2k();
