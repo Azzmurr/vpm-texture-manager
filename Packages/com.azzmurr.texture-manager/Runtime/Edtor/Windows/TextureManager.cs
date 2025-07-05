@@ -83,32 +83,33 @@ namespace Azzmurr.Utils
                     EditorGUILayout.Space();
                     if (Avatar.TextureCount != 0)
                     {
-                        VariableGridScope ActionGrid = new(new float[] { 200, 200 });
+                        VariableGridScope ActionGrid = new(new float[] { 75, 75 });
                         using (ActionGrid)
                         {
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Textures max size -> 2k")) Avatar.MakeAllTextures2k();
+                                GUILayout.Label("Textures");
                             });
-                            ActionGrid.Cell((index) => GUILayout.Label("Makes max texture size 2k"));
 
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Prepare textures for Android")) Avatar.MakeTexturesReadyForAndroid();
+                                using (new EditorGUILayout.HorizontalScope())
+                                {
+                                    if (GUILayout.Button("-> 2k")) Avatar.MakeAllTextures2k();
+                                    if (GUILayout.Button("Prepare textures for Android")) Avatar.MakeTexturesReadyForAndroid();
+                                    if (GUILayout.Button("Crunch")) Avatar.CrunchTextures();
+                                }
                             });
-                            ActionGrid.Cell((index) => GUILayout.Label("Makes max texture for android half size of PC size"));
 
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Crunch textures")) Avatar.CrunchTextures();
+                                GUILayout.Label("Materials");
                             });
-                            ActionGrid.Cell((index) => GUILayout.Label("Sets texture format to DTX1Crunched or DTX5Crunched"));
 
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Create Quest Material Presets")) Avatar.CreateQuestMaterialPresets();
+                                if (GUILayout.Button("Create Quest Presets")) Avatar.CreateQuestMaterialPresets();
                             });
-                            ActionGrid.Cell((index) => GUILayout.Label("This will create quest materilas with VRChat/Mobile/Standard Lite shader"));
                         }
 
 

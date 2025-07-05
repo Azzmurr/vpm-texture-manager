@@ -96,73 +96,50 @@ namespace Azzmurr.Utils
 
                     if (Avatar.MaterialsCount > 0)
                     {
-                        using (var ActionGrid = new VariableGridScope(new float[] { 200, 200 }))
+                        using (var ActionGrid = new VariableGridScope(new float[] { 75, 75 }))
                         {
+                            ActionGrid.Cell((index) => GUILayout.Label("Poiyomi", label));
+
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Unlock Poiyomi materials"))
+                                using (new EditorGUILayout.HorizontalScope())
                                 {
-                                    Avatar.UnlockMaterials();
-                                    Avatar.Recalculate();
+                                    if (GUILayout.Button("Unlock")) Avatar.UnlockMaterials();
+                                    if (GUILayout.Button("Update")) Avatar.UpdateMaterials();
+                                    if (GUILayout.Button("Lock")) Avatar.LockMaterials();
                                 }
-                                                            ;
                             });
-
-                            ActionGrid.Cell((index) => GUILayout.Label("It will unlock materials", label));
 
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Update Poiyomi materials"))
+                                GUILayout.Label("Textures", label);
+                            });
+
+                            ActionGrid.Cell((index) =>
+                            {
+                                using (new EditorGUILayout.HorizontalScope())
                                 {
-                                    Avatar.UpdateMaterials();
-                                    Avatar.Recalculate();
+                                    if (GUILayout.Button("-> 2k")) Avatar.MakeAllTextures2k();
+                                    if (GUILayout.Button("Prepare textures for Android")) Avatar.MakeTexturesReadyForAndroid();
+                                    if (GUILayout.Button("Crunch")) Avatar.CrunchTextures();
                                 }
-                                ;
                             });
-
-                            ActionGrid.Cell((index) => GUILayout.Label("It will update unlocked materials", label));
 
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Lock Poiyomi materials"))
-                                {
-                                    Avatar.LockMaterials();
-                                    Avatar.Recalculate();
-                                }
-                                ;
+                                GUILayout.Label("Materials", label);
                             });
-
-                            ActionGrid.Cell((index) => GUILayout.Label("It will lock materials", label));
-                            
-                            ActionGrid.Cell((index) =>
-                            {
-                                if (GUILayout.Button("Textures max size -> 2k")) Avatar.MakeAllTextures2k();
-                            });
-                            ActionGrid.Cell((index) => GUILayout.Label("Makes max texture size 2k"));
 
                             ActionGrid.Cell((index) =>
                             {
-                                if (GUILayout.Button("Prepare textures for Android")) Avatar.MakeTexturesReadyForAndroid();
+                                if (GUILayout.Button("Create Quest Presets")) Avatar.CreateQuestMaterialPresets();
                             });
-                            ActionGrid.Cell((index) => GUILayout.Label("Makes max texture for android half size of PC size"));
-
-                            ActionGrid.Cell((index) =>
-                            {
-                                if (GUILayout.Button("Crunch textures")) Avatar.CrunchTextures();
-                            });
-                            ActionGrid.Cell((index) => GUILayout.Label("Sets texture format to DTX1Crunched or DTX5Crunched"));
-
-                            ActionGrid.Cell((index) =>
-                            {
-                                if (GUILayout.Button("Create Quest Material Presets")) Avatar.CreateQuestMaterialPresets();
-                            });
-                            ActionGrid.Cell((index) => GUILayout.Label("This will create quest materilas with VRChat/Mobile/Standard Lite shader"));
                         }
 
                         GUILine();
                         EditorGUILayout.Space();
 
-                        using (var ResultsGrid = new VariableGridScope(new float[] { 72, 200, 1 }, 8))
+                        using (var ResultsGrid = new VariableGridScope(new float[] { 88, 200, 1 }, 8))
                         {
                             ResultsGrid.Cell((index) => GUILayout.Label("Preview", label));
                             ResultsGrid.Cell((index) => GUILayout.Label("Info", label));
@@ -170,6 +147,7 @@ namespace Azzmurr.Utils
                             {
                                 using (new EditorGUILayout.HorizontalScope())
                                 {
+                                    EditorGUILayout.Space();
                                     GUILayout.Label("Textures", label);
                                     if (GUILayout.Button(MoreTextureInfo ? "Less Info" : "More Info"))
                                     {
@@ -184,7 +162,7 @@ namespace Azzmurr.Utils
                                 ResultsGrid.Cell((index) =>
                                 {
                                     Texture2D preview = AssetPreview.GetAssetPreview(material.Material);
-                                    EditorGUILayout.ObjectField(GUIContent.none, preview, typeof(Texture2D), false, GUILayout.Width(72), GUILayout.Height(72));
+                                    EditorGUILayout.ObjectField(GUIContent.none, preview, typeof(Texture2D), false, GUILayout.Width(88), GUILayout.Height(88));
                                 });
 
                                 ResultsGrid.Cell((index) =>
@@ -211,7 +189,7 @@ namespace Azzmurr.Utils
                                             EditorGUILayout.Space();
                                             using (new EditorGUILayout.HorizontalScope())
                                             {
-                                                EditorGUILayout.ObjectField(GUIContent.none, texture.texture, typeof(Texture), false, GUILayout.Width(72), GUILayout.Height(72));
+                                                EditorGUILayout.ObjectField(GUIContent.none, texture.texture, typeof(Texture), false, GUILayout.Width(88), GUILayout.Height(88));
 
                                                 if (MoreTextureInfo)
                                                 {

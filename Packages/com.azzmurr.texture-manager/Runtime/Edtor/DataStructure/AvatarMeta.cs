@@ -77,6 +77,8 @@ namespace Azzmurr.Utils
             {
                 if (texture.PcResolution > 2048) texture.ChangeImportSize(2048);
             });
+
+            Recalculate();
         }
 
         public void MakeTexturesReadyForAndroid()
@@ -88,6 +90,8 @@ namespace Azzmurr.Utils
                     texture.ChangeImportSizeAndroid(texture.PcResolution / 2);
                 }
             });
+
+            Recalculate();
         }
 
         public void CrunchTextures()
@@ -99,6 +103,8 @@ namespace Azzmurr.Utils
                     texture.ChangeImporterFormat((TextureImporterFormat)texture.BestTextureFormat);
                 }
             });
+
+            Recalculate();
         }
 
         public void CreateQuestMaterialPresets()
@@ -138,6 +144,7 @@ namespace Azzmurr.Utils
         {
             List<Material> poi = materials.Where((meta) => meta.Poiyomi).ToList().ConvertAll((meta) => meta.Material);
             ShaderOptimizer.UnlockMaterials(poi);
+            Recalculate();
         }
 
         public void UpdateMaterials()
@@ -147,12 +154,15 @@ namespace Azzmurr.Utils
             {
                 mat.shader = Shader.Find(".poiyomi/Poiyomi Pro");
             });
+
+            Recalculate();
         }
 
         public void LockMaterials()
         {
             List<Material> poi = materials.Where((meta) => meta.Poiyomi).ToList().ConvertAll((meta) => meta.Material);
             ShaderOptimizer.LockMaterials(poi);
+            Recalculate();
         }
 
         private IEnumerable<MaterialMeta> GetMaterials()
