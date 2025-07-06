@@ -39,10 +39,7 @@ namespace Azzmurr.Utils
         GUIContent RefreshIcon;
 
         bool MoreTextureInfo = false;
-
-        GUIStyle label;
-        GUIStyle validLabel;
-        GUIStyle invalidLabel;
+        bool ShowCheckList = false;
 
         int[] _textureSizeOptions = new int[] { 0, 128, 256, 512, 1024, 2048, 4096, 8192 };
         TextureImporterFormat[] _compressionFormatOptions = new TextureImporterFormat[]{
@@ -62,14 +59,6 @@ namespace Azzmurr.Utils
 
         private void OnGUI()
         {
-            label = new GUIStyle(EditorStyles.label);
-
-            validLabel = new GUIStyle(EditorStyles.label);
-            validLabel.normal.textColor = Color.green;
-
-            invalidLabel = new GUIStyle(EditorStyles.label);
-            invalidLabel.normal.textColor = Color.red;
-
             EditorGUILayout.LabelField("Input", EditorStyles.boldLabel);
             EditorGUI.BeginChangeCheck();
 
@@ -98,7 +87,7 @@ namespace Azzmurr.Utils
                     {
                         using (var ActionGrid = new VariableGridScope(new float[] { 75, 75 }))
                         {
-                            ActionGrid.Cell((index) => GUILayout.Label("Poiyomi", label));
+                            ActionGrid.Cell((index) => GUILayout.Label("Poiyomi", Config.Label));
 
                             ActionGrid.Cell((index) =>
                             {
@@ -112,7 +101,7 @@ namespace Azzmurr.Utils
 
                             ActionGrid.Cell((index) =>
                             {
-                                GUILayout.Label("Textures", label);
+                                GUILayout.Label("Textures", Config.Label);
                             });
 
                             ActionGrid.Cell((index) =>
@@ -120,14 +109,14 @@ namespace Azzmurr.Utils
                                 using (new EditorGUILayout.HorizontalScope())
                                 {
                                     if (GUILayout.Button("-> 2k")) Avatar.MakeAllTextures2k();
-                                    if (GUILayout.Button("Prepare textures for Android")) Avatar.MakeTexturesReadyForAndroid();
+                                    if (GUILayout.Button("Prepare for Android")) Avatar.MakeTexturesReadyForAndroid();
                                     if (GUILayout.Button("Crunch")) Avatar.CrunchTextures();
                                 }
                             });
 
                             ActionGrid.Cell((index) =>
                             {
-                                GUILayout.Label("Materials", label);
+                                GUILayout.Label("Materials", Config.Label);
                             });
 
                             ActionGrid.Cell((index) =>
@@ -139,16 +128,26 @@ namespace Azzmurr.Utils
                         GUILine();
                         EditorGUILayout.Space();
 
-                        using (var ResultsGrid = new VariableGridScope(new float[] { 88, 200, 1 }, 8))
+                        using (var ResultsGrid = new VariableGridScope(new float[] { 88, ShowCheckList ? 450 : 200, 1 }, 8))
                         {
-                            ResultsGrid.Cell((index) => GUILayout.Label("Preview", label));
-                            ResultsGrid.Cell((index) => GUILayout.Label("Info", label));
+                            ResultsGrid.Cell((index) => GUILayout.Label("Preview", Config.Label));
+                            ResultsGrid.Cell((index) =>
+                            {
+                                using (new EditorGUILayout.HorizontalScope())
+                                {
+                                    GUILayout.Label("Info", Config.Label, GUILayout.Width(50));
+                                    if (GUILayout.Button(ShowCheckList ? "Hide Check List" : "Show Check List", GUILayout.Width(120)))
+                                    {
+                                        ShowCheckList = !ShowCheckList;
+                                    }
+                                }
+                            });
                             ResultsGrid.Cell((index) =>
                             {
                                 using (new EditorGUILayout.HorizontalScope())
                                 {
                                     EditorGUILayout.Space();
-                                    GUILayout.Label("Textures", label);
+                                    GUILayout.Label("Textures", Config.Label);
                                     if (GUILayout.Button(MoreTextureInfo ? "Less Info" : "More Info"))
                                     {
                                         MoreTextureInfo = !MoreTextureInfo;
@@ -171,12 +170,16 @@ namespace Azzmurr.Utils
                                     EditorGUILayout.Space();
                                     using (var MaterialInfoGrid = new VariableGridScope(new float[] { 20, 50 }))
                                     {
-                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Shader:", label));
-                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderName, label));
-                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Locked:", label));
-                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderLockedString, material.ShaderLockedError == null ? label : material.ShaderLockedError == true ? invalidLabel : validLabel));
-                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Version:", label));
-                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderVersion, material.ShaderVersionError == null ? label : material.ShaderVersionError == true ? invalidLabel : validLabel));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Shader:", Config.Label));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderName, Config.Label));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Locked:", Config.Label));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderLockedString, material.ShaderLockedError == null ? Config.Label : material.ShaderLockedError == true ? Config.InvalidLabel : Config.ValidLabel));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label("Version:", Config.Label));
+                                        MaterialInfoGrid.Cell((index) => GUILayout.Label(material.ShaderVersion, material.ShaderVersionError == null ? Config.Label : material.ShaderVersionError == true ? Config.InvalidLabel : Config.ValidLabel));
+                                        if (ShowCheckList)
+                                        {
+                                            material.RenderMaterialChecks();
+                                        }
                                     }
                                 });
 
@@ -197,7 +200,7 @@ namespace Azzmurr.Utils
                                                     {
                                                         using (var TextureSActions = new VariableGridScope(new float[] { 50, 100 }))
                                                         {
-                                                            TextureSActions.Cell((index) => GUILayout.Label("PC:", label));
+                                                            TextureSActions.Cell((index) => GUILayout.Label("PC:", Config.Label));
                                                             TextureSActions.Cell((index) =>
                                                             {
                                                                 if (texture.TextureWithChangableResolution)
@@ -216,7 +219,7 @@ namespace Azzmurr.Utils
                                                                 }
                                                             });
 
-                                                            TextureSActions.Cell((index) => GUILayout.Label("Android:", label));
+                                                            TextureSActions.Cell((index) => GUILayout.Label("Android:", Config.Label));
                                                             TextureSActions.Cell((ANDROID) =>
                                                             {
                                                                 if (texture.TextureWithChangableResolution)
@@ -235,7 +238,7 @@ namespace Azzmurr.Utils
                                                                 }
                                                             });
 
-                                                            TextureSActions.Cell((index) => GUILayout.Label("Format:", label));
+                                                            TextureSActions.Cell((index) => GUILayout.Label("Format:", Config.Label));
                                                             TextureSActions.Cell((Format) =>
                                                             {
                                                                 if (texture.FormatString.Length > 0)

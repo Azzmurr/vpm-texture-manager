@@ -137,6 +137,9 @@ namespace Azzmurr.Utils
 
                     }
                 });
+
+                EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<DefaultAsset>($"Assets/Quest Materials/{scene.name.Trim()}/{Name.Trim()}"));
+                AssetDatabase.Refresh();
             }
         }
 
