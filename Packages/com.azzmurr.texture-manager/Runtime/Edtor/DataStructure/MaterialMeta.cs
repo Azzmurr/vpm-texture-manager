@@ -227,12 +227,12 @@ namespace Azzmurr.Utils
                     RenderMaterialCheck(ChecksGrid, "_EmissionMap3", "Emission Map 3", new Texture2D(0, 0), (value) => value == null ? "Nothing" : "Specified", (propertyName, value) => { }, (x, y) => x != null);
                 }
 
-                RenderMaterialCheck(ChecksGrid, "_EmissionMaskPan", "Emission Vector 0", new Vector4(0f, -0.36f, 0f, 0f), (value) => $"{value.x}, {value.y}", (propertyName, value) => SetPropertyValue(propertyName, value), null);
+                RenderMaterialCheck(ChecksGrid, "_EmissionMaskPan", "Emission Vector 0", new Vector4(0f, -0.08f, 0f, 0f), (value) => $"{value.x}, {value.y}", (propertyName, value) => SetPropertyValue(propertyName, value), null);
                 if (audioLinkEnabled)
                 {
-                    RenderMaterialCheck(ChecksGrid, "_EmissionMask1Pan", "Emission Vector 1", new Vector4(0f, -0.36f, 0f, 0f), (value) => $"{value.x}, {value.y}", (propertyName, value) => SetPropertyValue(propertyName, value), null);
-                    RenderMaterialCheck(ChecksGrid, "_EmissionMask2Pan", "Emission Vector 2", new Vector4(0f, -0.36f, 0f, 0f), (value) => $"{value.x}, {value.y}", (propertyName, value) => SetPropertyValue(propertyName, value), null);
-                    RenderMaterialCheck(ChecksGrid, "_EmissionMask3Pan", "Emission Vector 3", new Vector4(0f, -0.36f, 0f, 0f), (value) => $"{value.x}, {value.y}", (propertyName, value) => SetPropertyValue(propertyName, value), null);
+                    RenderMaterialCheck(ChecksGrid, "_EmissionMask1Pan", "Emission Vector 1", new Vector4(0f, -0.08f, 0f, 0f), (value) => $"{value.x}, {value.y}", (propertyName, value) => SetPropertyValue(propertyName, value), null);
+                    RenderMaterialCheck(ChecksGrid, "_EmissionMask2Pan", "Emission Vector 2", new Vector4(0f, -0.08f, 0f, 0f), (value) => $"{value.x}, {value.y}", (propertyName, value) => SetPropertyValue(propertyName, value), null);
+                    RenderMaterialCheck(ChecksGrid, "_EmissionMask3Pan", "Emission Vector 3", new Vector4(0f, -0.08f, 0f, 0f), (value) => $"{value.x}, {value.y}", (propertyName, value) => SetPropertyValue(propertyName, value), null);
                 }
 
                 RenderMaterialCheck(ChecksGrid, "_EmissionColor", "Emission Color 0", new Color(0.14798677f, 1.05927384f, 0.06231023f, 1f), null, (propertyName, value) => SetPropertyValue(propertyName, value), null);
