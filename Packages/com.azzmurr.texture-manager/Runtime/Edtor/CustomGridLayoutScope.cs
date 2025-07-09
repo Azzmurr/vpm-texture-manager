@@ -33,22 +33,18 @@ namespace Azzmurr.Utils
 
             currentColumn++;
 
-            if (currentColumn >= columnWidths.Length)
-            {
-                EditorGUILayout.EndHorizontal();
-                GUILayout.Space(spacing);
-                currentColumn = 0;
-                rowOpen = false;
-            }
+            if (currentColumn < columnWidths.Length) return;
+            EditorGUILayout.EndHorizontal();
+            GUILayout.Space(spacing);
+            currentColumn = 0;
+            rowOpen = false;
         }
 
         public void Dispose()
         {
-            if (rowOpen)
-            {
-                EditorGUILayout.EndHorizontal();
-                rowOpen = false;
-            }
+            if (!rowOpen) return;
+            EditorGUILayout.EndHorizontal();
+            rowOpen = false;
         }
     }
 }

@@ -2,68 +2,54 @@ using UnityEngine;
 
 namespace Azzmurr.Utils
 {
-    public class Config
+    public abstract class Config
     {
-        static public string DEFAULT_MAT_NAME = "Used in mat swap";
-        static public int ROW_HEIGHT = 20;
-        static public int MATERIAL_BUTTON_WTDTH = 25;
-        static public int MATERIAL_NAME_WIDTH = 150;
-        static public int TEXTURE_WIDTH = 450;
-        static public int SIZE_WIDTH = 70;
-        static public int PC_WIDTH = 55;
-        static public int ANDROID_WIDTH = 65;
-        static public int FORMAT_WIDTH = 150;
-        static public int ACTIONS_WIDTH = 175;
+        public const int MaterialNameWidth = 150;
+        public const int TextureWidth = 450;
+        public const int SizeWidth = 70;
+        public const int PCWidth = 55;
+        public const int AndroidWidth = 65;
+        public const int FormatWidth = 150;
+        public const int ActionsWidth = 175;
 
-        static public GUIStyle Label
-        {
-            get
-            {
-                var style = new GUIStyle(GUI.skin.GetStyle("Label"));
-                return style;
-            }
-        }
+        public static GUIStyle Label => new(GUI.skin.GetStyle("Label"));
 
-        static public GUIStyle ValidLabel
-        {
-            get
+        public static GUIStyle ValidLabel =>
+            new(GUI.skin.GetStyle("Label"))
             {
-                var style = new GUIStyle(GUI.skin.GetStyle("Label"));
-                style.normal.textColor = Color.green;
-                return style;
-            }
-        }
+                normal =
+                {
+                    textColor = Color.green
+                }
+            };
 
-        static public GUIStyle InvalidLabel
-        {
-            get
+        public static GUIStyle InvalidLabel =>
+            new(GUI.skin.GetStyle("Label"))
             {
-                var style = new GUIStyle(GUI.skin.GetStyle("Label"));
-                style.normal.textColor = Color.red;
-                return style;
-            }
-        }
+                normal =
+                {
+                    textColor = Color.red
+                }
+            };
 
-        static public GUIStyle ValidCenteredLabel
-        {
-            get
+        public static GUIStyle ValidCenteredLabel =>
+            new(GUI.skin.GetStyle("Label"))
             {
-                var style = new GUIStyle(GUI.skin.GetStyle("Label"));
-                style.normal.textColor = Color.green;
-                style.alignment = TextAnchor.UpperCenter;
-                return style;
-            }
-        }
+                normal =
+                {
+                    textColor = Color.green
+                },
+                alignment = TextAnchor.UpperCenter
+            };
 
-        static public GUIStyle InvalidCenteredLabel
-        {
-            get
+        public static GUIStyle InvalidCenteredLabel =>
+            new(GUI.skin.GetStyle("Label"))
             {
-                var style = new GUIStyle(GUI.skin.GetStyle("Label"));
-                style.normal.textColor = Color.red;
-                style.alignment = TextAnchor.UpperCenter;
-                return style;
-            }
-        }
+                normal =
+                {
+                    textColor = Color.red
+                },
+                alignment = TextAnchor.UpperCenter
+            };
     }
 }

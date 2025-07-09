@@ -10,37 +10,38 @@ namespace Azzmurr.Utils
         [MenuItem("Tools/Azzmurr/Texture Manager")]
         public static void Init()
         {
-            TextureManager window = (TextureManager)EditorWindow.GetWindow(typeof(TextureManager));
+            var window = (TextureManager)GetWindow(typeof(TextureManager));
             window.titleContent = new GUIContent("Texture Manager");
             window.Show();
         }
 
         [MenuItem("GameObject/Azzmurr/Texture Manager", true, 0)]
-        static bool CanShowFromSelection() => Selection.activeGameObject != null;
+        public static bool CanShowFromSelection() => Selection.activeGameObject != null;
 
         [MenuItem("GameObject/Azzmurr/Texture Manager", false, 0)]
         public static void ShowFromSelection()
         {
-            TextureManager window = (TextureManager)EditorWindow.GetWindow(typeof(TextureManager));
+            var window = (TextureManager)EditorWindow.GetWindow(typeof(TextureManager));
             window.titleContent = new GUIContent("Texture Manager");
-            window.Avatar = new AvatarMeta(Selection.activeGameObject);
+            window._avatar = new AvatarMeta(Selection.activeGameObject);
             window.Show();
         }
 
         public static void Init(GameObject avatar)
         {
-            TextureManager window = (TextureManager)EditorWindow.GetWindow(typeof(TextureManager));
+            var window = (TextureManager)EditorWindow.GetWindow(typeof(TextureManager));
             window.titleContent = new GUIContent("Texture Manager");
-            window.Avatar = new AvatarMeta(avatar);
+            window._avatar = new AvatarMeta(avatar);
             window.Show();
         }
 
-        AvatarMeta Avatar;
-        Vector2 MainScrollPosition;
-        GUIContent RefreshIcon;
+        private AvatarMeta _avatar;
+        private Vector2 _mainScrollPosition;
+        private GUIContent _refreshIcon;
 
-        int[] _textureSizeOptions = new int[] { 0, 128, 256, 512, 1024, 2048, 4096, 8192 };
-        TextureImporterFormat[] _compressionFormatOptions = new TextureImporterFormat[]{
+        private readonly int[] _textureSizeOptions = { 0, 128, 256, 512, 1024, 2048, 4096, 8192 };
+
+        private readonly TextureImporterFormat[] _compressionFormatOptions = {
             TextureImporterFormat.Automatic,
             TextureImporterFormat.Automatic,
             TextureImporterFormat.BC7,
@@ -53,7 +54,7 @@ namespace Azzmurr.Utils
 
         private void OnEnable()
         {
-            RefreshIcon = EditorGUIUtility.IconContent("RotateTool On", "Recalculate");
+            _refreshIcon = EditorGUIUtility.IconContent("RotateTool On", "Recalculate");
         }
 
         private void OnGUI()
@@ -63,206 +64,186 @@ namespace Azzmurr.Utils
             using (new EditorGUILayout.HorizontalScope())
             {
 
-                Button(GUILayout.Button(RefreshIcon, GUILayout.Width(30), GUILayout.Height(30)), () => Avatar?.Recalculate());
+                Button(GUILayout.Button(_refreshIcon, GUILayout.Width(30), GUILayout.Height(30)), () => _avatar?.Recalculate());
 
-                GameObject gameObject = (GameObject)EditorGUILayout.ObjectField(GUIContent.none, Avatar?.GameObject, typeof(GameObject), true, GUILayout.Height(30));
+                var gameObject = (GameObject)EditorGUILayout.ObjectField(GUIContent.none, _avatar?.GameObject, typeof(GameObject), true, GUILayout.Height(30));
 
-                if (Avatar == null || Avatar.GameObject != gameObject)
+                if (_avatar == null || _avatar.GameObject != gameObject)
                 {
-                    Avatar = gameObject ? new AvatarMeta(gameObject) : null;
+                    _avatar = gameObject ? new AvatarMeta(gameObject) : null;
                 }
             }
 
-            if (Avatar != null)
+            if (_avatar == null) return;
+            using (var scroll = new EditorGUILayout.ScrollViewScope(_mainScrollPosition))
             {
-                using (var scroll = new EditorGUILayout.ScrollViewScope(MainScrollPosition))
+
+                _mainScrollPosition = scroll.scrollPosition;
+                GUILine();
+                EditorGUILayout.Space();
+                if (_avatar.TextureCount == 0) return;
+                VariableGridScope actionGrid = new(new float[] { 75, 75 });
+                using (actionGrid)
                 {
+                    actionGrid.Cell(_ => GUILayout.Label("Textures"));
 
-                    MainScrollPosition = scroll.scrollPosition;
-                    GUILine();
-                    EditorGUILayout.Space();
-                    if (Avatar.TextureCount != 0)
+                    actionGrid.Cell(_ =>
                     {
-                        VariableGridScope ActionGrid = new(new float[] { 75, 75 });
-                        using (ActionGrid)
+                        using (new EditorGUILayout.HorizontalScope())
                         {
-                            ActionGrid.Cell((index) =>
-                            {
-                                GUILayout.Label("Textures");
-                            });
-
-                            ActionGrid.Cell((index) =>
-                            {
-                                using (new EditorGUILayout.HorizontalScope())
-                                {
-                                    if (GUILayout.Button("-> 2k")) Avatar.MakeAllTextures2k();
-                                    if (GUILayout.Button("Prepare textures for Android")) Avatar.MakeTexturesReadyForAndroid();
-                                    if (GUILayout.Button("Crunch")) Avatar.CrunchTextures();
-                                }
-                            });
-
-                            ActionGrid.Cell((index) =>
-                            {
-                                GUILayout.Label("Materials");
-                            });
-
-                            ActionGrid.Cell((index) =>
-                            {
-                                if (GUILayout.Button("Create Quest Presets")) Avatar.CreateQuestMaterialPresets();
-                            });
+                            if (GUILayout.Button("-> 2k")) _avatar.MakeAllTextures2K();
+                            if (GUILayout.Button("Prepare textures for Android")) _avatar.MakeTexturesReadyForAndroid();
+                            if (GUILayout.Button("Crunch")) _avatar.CrunchTextures();
                         }
+                    });
 
+                    actionGrid.Cell(_ => GUILayout.Label("Materials"));
 
-                        GUILine();
-                        EditorGUILayout.Space();
-
-                        VariableGridScope GridResults = new VariableGridScope(new float[] {
-                            // Config.MATERIAL_BUTTON_WTDTH,
-                            Config.MATERIAL_NAME_WIDTH,
-                            Config.TEXTURE_WIDTH,
-                            Config.SIZE_WIDTH,
-                            Config.PC_WIDTH,
-                            Config.ANDROID_WIDTH,
-                            Config.FORMAT_WIDTH,
-                            Config.ACTIONS_WIDTH,
-                        });
-                        using (GridResults)
-                        {
-                            GridResults.Cell((Material) => GUILayout.Label("Material"));
-                            GridResults.Cell((Texture) => GUILayout.Label("Texture"));
-                            GridResults.Cell((Size) => GUILayout.Label("Size"));
-                            GridResults.Cell((PC) => GUILayout.Label("PC"));
-                            GridResults.Cell((ANDROID) => GUILayout.Label("ANDROID"));
-                            GridResults.Cell((Format) => GUILayout.Label("Format"));
-                            GridResults.Cell((Actions) => GUILayout.Label("Actions"));
-
-                            Avatar.ForeachTexture((texture) =>
-                            {
-                                GridResults.Cell((Material) =>
-                                {
-                                    using (new EditorGUILayout.VerticalScope())
-                                    {
-                                        Avatar.ForeachTextureMaterial(texture, (material) => EditorGUILayout.ObjectField(material, typeof(Material), false));
-                                    }
-                                });
-                                GridResults.Cell((Texture) => EditorGUILayout.ObjectField(texture.texture, typeof(object), false));
-                                GridResults.Cell((Size) => GUILayout.Label(texture.SizeString));
-                                GridResults.Cell((PC) =>
-                                {
-                                    if (texture.TextureWithChangableResolution)
-                                    {
-                                        _textureSizeOptions[0] = texture.PcResolution;
-                                        int newResolution = EditorGUILayout.IntPopup(texture.PcResolution, _textureSizeOptions.Select(x => x.ToString()).ToArray(), _textureSizeOptions);
-                                        if (newResolution != texture.PcResolution)
-                                        {
-                                            texture.ChangeImportSize(newResolution);
-                                            Avatar.Recalculate();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        GUILayout.Label(texture.PcResolution.ToString());
-                                    }
-                                });
-
-                                GridResults.Cell((ANDROID) =>
-                                {
-                                    if (texture.TextureWithChangableResolution)
-                                    {
-                                        _textureSizeOptions[0] = texture.AndroidResolution;
-                                        int newResolutionAndroid = EditorGUILayout.IntPopup(texture.AndroidResolution, _textureSizeOptions.Select(x => x.ToString()).ToArray(), _textureSizeOptions);
-                                        if (newResolutionAndroid != texture.AndroidResolution)
-                                        {
-                                            texture.ChangeImportSizeAndroid(newResolutionAndroid);
-                                            Avatar.Recalculate();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        GUILayout.Label(texture.AndroidResolution.ToString());
-                                    }
-                                });
-
-                                GridResults.Cell((Format) =>
-                                {
-                                    if (texture.FormatString.Length > 0)
-                                    {
-                                        if (texture.TextureWithChangableFormat)
-                                        {
-                                            _compressionFormatOptions[0] = ((TextureImporterFormat)texture.Format);
-                                            int newFormat = EditorGUILayout.Popup(0, _compressionFormatOptions.Select(x => x.ToString()).ToArray());
-                                            if (newFormat != 0)
-                                            {
-                                                texture.ChangeImporterFormat(_compressionFormatOptions[newFormat]);
-                                                Avatar.Recalculate();
-                                            }
-                                        }
-
-                                        else
-                                        {
-                                            GUILayout.Label(texture.Format.ToString());
-                                        }
-                                    }
-                                });
-
-                                GridResults.Cell((Actions) =>
-                                {
-                                    if (texture.Poiyomi) GUILayout.Label("Poiyomi textures are ignored and can't be changed");
-
-                                    if (texture.BetterTextureFormat != null)
-                                    {
-                                        bool changeFormat = GUILayout.Button($"{texture.BetterTextureFormat} → -{texture.SavedSizeWithBetterTextureFormat}");
-                                        if (changeFormat)
-                                        {
-                                            bool changeFormatPopup = EditorUtility.DisplayDialog(
-                                                $"Confirm Compression Format Change!",
-                                                $"You are about to change the compression format of texture '{texture.texture.name}' from {texture.Format} => {texture.BetterTextureFormat}\n\n" +
-                                                $"If you wish to return this texture's compression to {texture.FormatString}, you will have to do so manually as this action is not undo-able.\n\nAre you sure?",
-                                                "Yes",
-                                                "No"
-                                            );
-
-                                            if (changeFormatPopup)
-                                            {
-                                                texture.ChangeImporterFormat((TextureImporterFormat)texture.BetterTextureFormat);
-                                                Avatar.Recalculate();
-                                            }
-                                        }
-                                    }
-
-                                    if (texture.TextureTooBig)
-                                    {
-                                        bool chageImportSize = GUILayout.Button($"2k → -{texture.SaveSizeWithSmallerTexture}");
-
-                                        if (chageImportSize)
-                                        {
-                                            texture.ChangeImportSize(2048);
-                                            Avatar.Recalculate();
-                                        }
-                                    }
-                                });
-                            });
-                        }
-                    }
-
+                    actionGrid.Cell(_ =>
+                    {
+                        if (GUILayout.Button("Create Quest Presets")) _avatar.CreateQuestMaterialPresets();
+                    });
                 }
+
+
+                GUILine();
+                EditorGUILayout.Space();
+
+                var gridResults = new VariableGridScope(new float[] {
+                    Config.MaterialNameWidth,
+                    Config.TextureWidth,
+                    Config.SizeWidth,
+                    Config.PCWidth,
+                    Config.AndroidWidth,
+                    Config.FormatWidth,
+                    Config.ActionsWidth,
+                });
+                using (gridResults)
+                {
+                    gridResults.Cell(_ => GUILayout.Label("Material"));
+                    gridResults.Cell(_ => GUILayout.Label("Texture"));
+                    gridResults.Cell(_ => GUILayout.Label("Size"));
+                    gridResults.Cell(_ => GUILayout.Label("PC"));
+                    gridResults.Cell(_ => GUILayout.Label("ANDROID"));
+                    gridResults.Cell(_ => GUILayout.Label("Format"));
+                    gridResults.Cell(_ => GUILayout.Label("Actions"));
+
+                    _avatar.ForeachTexture(texture =>
+                    {
+                        gridResults.Cell(_ =>
+                        {
+                            using (new EditorGUILayout.VerticalScope())
+                            {
+                                _avatar.ForeachTextureMaterial(texture, material => EditorGUILayout.ObjectField(material, typeof(Material), false));
+                            }
+                        });
+                        gridResults.Cell(_ => EditorGUILayout.ObjectField(texture.Texture, typeof(object), false));
+                        gridResults.Cell(_ => GUILayout.Label(texture.SizeString));
+                        gridResults.Cell(_ =>
+                        {
+                            if (texture.TextureWithChangeableResolution)
+                            {
+                                _textureSizeOptions[0] = texture.PcResolution;
+                                var newResolution = EditorGUILayout.IntPopup(texture.PcResolution, _textureSizeOptions.Select(x => x.ToString()).ToArray(), _textureSizeOptions);
+                                if (newResolution == texture.PcResolution) return;
+                                
+                                texture.ChangeImportSize(newResolution);
+                                _avatar.Recalculate();
+                            }
+                            else
+                            {
+                                GUILayout.Label(texture.PcResolution.ToString());
+                            }
+                        });
+
+                        gridResults.Cell(_ =>
+                        {
+                            if (texture.TextureWithChangeableResolution)
+                            {
+                                _textureSizeOptions[0] = texture.AndroidResolution;
+                                var newResolutionAndroid = EditorGUILayout.IntPopup(texture.AndroidResolution, _textureSizeOptions.Select(x => x.ToString()).ToArray(), _textureSizeOptions);
+                                if (newResolutionAndroid == texture.AndroidResolution) return;
+                                
+                                texture.ChangeImportSizeAndroid(newResolutionAndroid);
+                                _avatar.Recalculate();
+                            }
+                            else
+                            {
+                                GUILayout.Label(texture.AndroidResolution.ToString());
+                            }
+                        });
+
+                        gridResults.Cell(_ =>
+                        {
+                            if (texture.FormatString.Length <= 0) return;
+                            
+                            if (texture.TextureWithChangeableFormat && texture.Format != null)
+                            {
+                                _compressionFormatOptions[0] = (TextureImporterFormat)texture.Format;
+                                var newFormat = EditorGUILayout.Popup(0, _compressionFormatOptions.Select(x => x.ToString()).ToArray());
+                                if (newFormat == 0) return;
+                                
+                                texture.ChangeImporterFormat(_compressionFormatOptions[newFormat]);
+                                _avatar.Recalculate();
+                            }
+
+                            else
+                            {
+                                GUILayout.Label(texture.Format.ToString());
+                            }
+                        });
+
+                        gridResults.Cell(_ =>
+                        {
+                            if (texture.Poiyomi) GUILayout.Label("Poiyomi textures are ignored and can't be changed");
+
+                            if (texture.BetterTextureFormat != null)
+                            {
+                                var changeFormat = GUILayout.Button($"{texture.BetterTextureFormat} → -{texture.SavedSizeWithBetterTextureFormat}");
+                                if (changeFormat)
+                                {
+                                    var changeFormatPopup = EditorUtility.DisplayDialog(
+                                        "Confirm Compression Format Change!",
+                                        $"You are about to change the compression format of texture '{texture.Texture.name}' from {texture.Format} => {texture.BetterTextureFormat}\n\n" +
+                                        $"If you wish to return this texture's compression to {texture.FormatString}, you will have to do so manually as this action is not undo-able.\n\nAre you sure?",
+                                        "Yes",
+                                        "No"
+                                    );
+
+                                    if (changeFormatPopup)
+                                    {
+                                        texture.ChangeImporterFormat((TextureImporterFormat)texture.BetterTextureFormat);
+                                        _avatar.Recalculate();
+                                    }
+                                }
+                            }
+
+                            if (texture.TextureTooBig)
+                            {
+                                var chageImportSize = GUILayout.Button($"2k → -{texture.SaveSizeWithSmallerTexture}");
+
+                                if (!chageImportSize) return;
+                                texture.ChangeImportSize(2048);
+                                _avatar.Recalculate();
+                            }
+                        });
+                    });
+                }
+
             }
         }
 
-        static void Button(bool button, Action action)
+        private static void Button(bool button, Action action)
         {
             if (button) action.Invoke();
         }
 
-        static void GUILine(int i_height = 1)
+        private static void GUILine(int iHeight = 1)
         {
             GUILayout.Space(10);
-            Rect rect = EditorGUILayout.GetControlRect(false, i_height);
-            if (rect != null)
-            {
-                rect.width = EditorGUIUtility.currentViewWidth;
-                GUI.DrawTexture(rect, EditorGUIUtility.whiteTexture);
-            }
+            var rect = EditorGUILayout.GetControlRect(false, iHeight);
+            rect.width = EditorGUIUtility.currentViewWidth;
+            GUI.DrawTexture(rect, EditorGUIUtility.whiteTexture);
             GUILayout.Space(10);
         }
     }
