@@ -139,7 +139,7 @@ namespace Azzmurr.Utils {
                         });
                     }
 
-                    _valueContainer.Add(new Label("HDR: "));
+                    _valueContainer.Add(new Label("HDR: ") { style = { unityTextAlign = TextAnchor.MiddleLeft } });
                     _valueContainer.Add(hdrToggle);
                     _valueContainer.Add(colorField);
                     break;
