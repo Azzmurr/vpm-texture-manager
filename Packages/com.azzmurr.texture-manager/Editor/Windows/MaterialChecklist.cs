@@ -38,7 +38,7 @@ namespace Azzmurr.Utils {
                 minWidth = 300,
                 stretchable = true,
                 resizable = true,
-                makeCell = () => new Label(),
+                makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } },
                 bindCell = (element, index) => {
                     var label = (Label)element;
                     var item = (MaterialCheckListItem)checklist.viewController.GetItemForIndex(index);
@@ -51,7 +51,7 @@ namespace Azzmurr.Utils {
                 width = 65,
                 stretchable = false,
                 resizable = false,
-                makeCell = () => new Label(),
+                makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleCenter } },
                 bindCell = (element, index) => {
                     var label = (Label)element;
                     var item = (MaterialCheckListItem)checklist.viewController.GetItemForIndex(index);
@@ -92,7 +92,7 @@ namespace Azzmurr.Utils {
                 minWidth = 400,
                 stretchable = true,
                 resizable = true,
-                makeCell = () => new VisualElement(),
+                makeCell = () => new VisualElement { style = { flexGrow = 1 } },
                 bindCell = (element, index) => {
                     element.Clear();
 
@@ -101,7 +101,7 @@ namespace Azzmurr.Utils {
                     if (!Material.Material.HasProperty(item.propertyName)) return;
 
                     if (item.propertyCheckType == PropertyCheckType.Exists) {
-                        element.Add(new Label("Exists"));
+                        element.Add(new Label("Exists") { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } });
                         return;
                     }
 
@@ -117,7 +117,7 @@ namespace Azzmurr.Utils {
                 width = 65,
                 stretchable = false,
                 resizable = false,
-                makeCell = () => new Label { style = { justifyContent = Justify.Center, alignItems = Align.Center } },
+                makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleCenter } },
                 bindCell = (element, index) => {
                     var item = (MaterialCheckListItem)checklist.viewController.GetItemForIndex(index);
 

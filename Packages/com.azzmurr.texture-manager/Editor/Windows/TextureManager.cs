@@ -54,7 +54,7 @@ namespace Azzmurr.Utils {
             actions.columns.Add(new Column {
                 title = "Type",
                 width = 80,
-                makeCell = () => new Label(),
+                makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } },
                 bindCell = (element, index) => {
                     var label = (Label)element;
                     var actionGroup = (ActionGroup)actions.viewController.GetItemForIndex(index);
@@ -165,7 +165,7 @@ namespace Azzmurr.Utils {
                 width = 100,
                 stretchable = false,
                 resizable = false,
-                makeCell = () => new Label(),
+                makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft }},
                 bindCell = (element, index) => {
                     var label = (Label)element;
                     var texture = (TextureMeta)textureListGUI.viewController.GetItemForIndex(index);
@@ -258,7 +258,7 @@ namespace Azzmurr.Utils {
                     var texture = (TextureMeta)textureListGUI.viewController.GetItemForIndex(index);
 
                     if (texture.Poiyomi) {
-                        element.Add(new Label { text = "Poiyomi textures are ignored and can't be changed" });
+                        element.Add(new Label { text = "Poiyomi textures are ignored and can't be changed", style = { flexGrow = 1 }});
                     }
 
                     if (texture.BetterTextureFormat != null) {
@@ -371,7 +371,7 @@ namespace Azzmurr.Utils {
         [MenuItem("Tools/Azzmurr/Texture Manager")]
         public static void Init() {
             var window = (TextureManager)GetWindow(typeof(TextureManager));
-            window.titleContent = new GUIContent("Material Manager");
+            window.titleContent = new GUIContent("Texture Manager");
             window.Avatar = new AvatarMeta(Selection.activeGameObject);
             window.Show();
         }
@@ -384,14 +384,14 @@ namespace Azzmurr.Utils {
         [MenuItem("GameObject/Azzmurr/Texture Manager", false, 0)]
         public static void ShowFromSelection() {
             var window = (TextureManager)GetWindow(typeof(TextureManager));
-            window.titleContent = new GUIContent("Material Manager");
+            window.titleContent = new GUIContent("Texture Manager");
             window.Avatar = new AvatarMeta(Selection.activeGameObject);
             window.Show();
         }
 
         public static void Init(GameObject avatar) {
             var window = (TextureManager)GetWindow(typeof(TextureManager));
-            window.titleContent = new GUIContent("Material Manager");
+            window.titleContent = new GUIContent("Texture Manager");
             window.Avatar = new AvatarMeta(Selection.activeGameObject);
             window.Show();
         }

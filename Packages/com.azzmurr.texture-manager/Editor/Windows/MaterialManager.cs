@@ -37,7 +37,7 @@ namespace Azzmurr.Utils {
             actions.columns.Add(new Column {
                 title = "Type",
                 width = 80,
-                makeCell = () => new Label(),
+                makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } },
                 bindCell = (element, index) => {
                     var label = (Label)element;
                     var actionGroup = (ActionGroup)actions.viewController.GetItemForIndex(index);
@@ -155,7 +155,7 @@ namespace Azzmurr.Utils {
                     cell.columns.Add(new Column {
                         title = "Title",
                         width = 75,
-                        makeCell = () => new Label(),
+                        makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } },
                         bindCell = (element, index) => {
                             var label = (Label)element;
                             var info = (MaterialQuickInfo)cell.viewController.GetItemForIndex(index);
@@ -180,11 +180,13 @@ namespace Azzmurr.Utils {
                     var list = (MultiColumnListView)element;
                     var material = (MaterialMeta)materialsListGUI.viewController.GetItemForIndex(index);
                     list.itemsSource = new List<MaterialQuickInfo> {
-                        new() { title = "Shader", Content = new Label(material.ShaderName) },
+                        new() { title = "Shader", Content = new Label(material.ShaderName) { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } } },
                         new() {
                             title = "Locked",
                             Content = new Label(material.ShaderLockedString) {
                                 style = {
+                                    flexGrow = 1,
+                                    unityTextAlign = TextAnchor.MiddleLeft,
                                     color = material.ShaderLockedError switch {
                                         null => Color.white,
                                         true => Color.red,
