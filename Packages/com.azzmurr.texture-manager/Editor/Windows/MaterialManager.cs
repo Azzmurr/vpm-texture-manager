@@ -113,7 +113,9 @@ namespace Azzmurr.Utils {
 
             materialsListGUI.columns.Add(new Column {
                 title = "Preview",
-                minWidth = 110,
+                width = 110,
+                stretchable = false,
+                resizable = false,
                 makeCell = () => new VisualElement {
                     style = {
                         width = 90,
@@ -139,6 +141,8 @@ namespace Azzmurr.Utils {
             materialsListGUI.columns.Add(new Column {
                 title = "Information",
                 width = 230,
+                stretchable = false,
+                resizable = false,
                 makeCell = () => {
                     var cell = new MultiColumnListView {
                         focusable = true,
@@ -208,7 +212,8 @@ namespace Azzmurr.Utils {
             materialsListGUI.columns.Add(new Column {
                 title = "Actions",
                 width = 100,
-
+                stretchable = false,
+                resizable = false,
                 bindCell = (element, index) => {
                     var material = (MaterialMeta)materialsListGUI.viewController.GetItemForIndex(index);
                     element.Clear();
@@ -234,6 +239,8 @@ namespace Azzmurr.Utils {
                 title = "Textures",
                 width = Length.Auto(),
                 minWidth = 90,
+                stretchable = true,
+                resizable = true,
                 makeCell = () => new VisualElement
                     { style = { flexDirection = FlexDirection.Row, flexGrow = 1, flexShrink = 0 } },
                 bindCell = (element, index) => {

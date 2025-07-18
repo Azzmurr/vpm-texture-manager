@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 using ObjectField = UnityEditor.Search.ObjectField;
 
 namespace Azzmurr.Utils {
@@ -40,6 +36,8 @@ namespace Azzmurr.Utils {
             checklist.columns.Add(new Column {
                 title = "Property Name",
                 minWidth = 300,
+                stretchable = true,
+                resizable = true,
                 makeCell = () => new Label(),
                 bindCell = (element, index) => {
                     var label = (Label)element;
@@ -50,8 +48,9 @@ namespace Azzmurr.Utils {
 
             checklist.columns.Add(new Column {
                 title = "Status",
-                maxWidth = 65,
-                minWidth = 65,
+                width = 65,
+                stretchable = false,
+                resizable = false,
                 makeCell = () => new Label(),
                 bindCell = (element, index) => {
                     var label = (Label)element;
@@ -63,27 +62,40 @@ namespace Azzmurr.Utils {
 
             checklist.columns.Add(new Column {
                 title = "Current Value",
-                minWidth = 300,
-                makeCell = () => new VisualElement(),
+                minWidth = 400,
+                stretchable = true,
+                resizable = true,
+                makeCell = () => new UniversalValueField(),
                 bindCell = (element, index) => {
-                    element.Clear();
+                    var field = (UniversalValueField)element;
                     var item = (MaterialCheckListItem)checklist.viewController.GetItemForIndex(index);
 
                     if (!Material.Material.HasProperty(item.propertyName)) return;
 
-                    var helper = new CheckListHelper(Material);
-                    var (needsUpdate,actualValue, desiredValue, itemElement) = helper.CheckProperty(item);
-                    helper.SetFieldValue(itemElement, actualValue);
-                    element.Add(itemElement);
+                    field.SetEnabled(false);
+                    var universalValue = new UniversalValue { isHDR = item.desiredValue.isHDR };
+                    var currentValue = CheckListHelper.CheckProperty(Material, item).actualValue;
+
+                    if (currentValue == null) {
+                        universalValue.type = item.desiredValue.type;
+                    }
+                    else {
+                        universalValue.SetValue(item.desiredValue.type == UniversalValue.ValueType.Bool ? Mathf.Approximately((float)currentValue, 1f) : currentValue);
+                    }
+
+                    field.value = universalValue;
                 }
             });
 
             checklist.columns.Add(new Column {
                 title = "Desired Value",
-                minWidth = 300,
+                minWidth = 400,
+                stretchable = true,
+                resizable = true,
                 makeCell = () => new VisualElement(),
                 bindCell = (element, index) => {
                     element.Clear();
+
                     var item = (MaterialCheckListItem)checklist.viewController.GetItemForIndex(index);
 
                     if (!Material.Material.HasProperty(item.propertyName)) return;
@@ -93,38 +105,38 @@ namespace Azzmurr.Utils {
                         return;
                     }
 
-                    var helper = new CheckListHelper(Material);
-                    var (needsUpdate,actualValue, desiredValue, itemElement) = helper.CheckProperty(item);
-                    helper.SetFieldValue(itemElement, desiredValue);
-
-                    element.Add(itemElement);
+                    var field = new UniversalValueField();
+                    field.SetEnabled(false);
+                    field.value = item.desiredValue;
+                    element.Add(field);
                 }
             });
 
             checklist.columns.Add(new Column {
                 title = "Status",
-                maxWidth = 65,
-                minWidth = 65,
-                makeCell = () => new Label { style = { justifyContent = Justify.Center, alignItems = Align.Center }},
+                width = 65,
+                stretchable = false,
+                resizable = false,
+                makeCell = () => new Label { style = { justifyContent = Justify.Center, alignItems = Align.Center } },
                 bindCell = (element, index) => {
                     var item = (MaterialCheckListItem)checklist.viewController.GetItemForIndex(index);
 
                     if (!Material.Material.HasProperty(item.propertyName))
                         return;
 
-                    var helper = new CheckListHelper(Material);
-                    var (needsUpdate, actualValue, desiredValue, itemElement) = helper.CheckProperty(item);
+                    var (needsUpdate, _, _) = CheckListHelper.CheckProperty(Material, item);
 
                     ((Label)element).text = needsUpdate ? "✖" : "✔";
                     ((Label)element).style.color = needsUpdate ? Color.red : Color.green;
                     ((Label)element).style.color = needsUpdate ? Color.red : Color.green;
-
                 }
             });
 
             checklist.columns.Add(new Column {
                 title = "Actions",
                 minWidth = 100,
+                stretchable = true,
+                resizable = true,
                 makeCell = () => new VisualElement(),
                 bindCell = (element, index) => {
                     element.Clear();
@@ -135,8 +147,7 @@ namespace Azzmurr.Utils {
 
                     if (item.propertyCheckType == PropertyCheckType.Exists) return;
 
-                    var helper = new CheckListHelper(Material);
-                    var (needsUpdate, actualValue, desiredValue, itemElement) = helper.CheckProperty(item);
+                    var (needsUpdate, actualValue, desiredValue) = CheckListHelper.CheckProperty(Material, item);
 
                     if (needsUpdate) {
                         element.Add(new Button(() =>
@@ -146,12 +157,10 @@ namespace Azzmurr.Utils {
                                 }
 
                                 Material.SetPropertyValue(item.propertyName, desiredValue);
-                            }))
-                        {
+                            })) {
                             text = "FIX"
                         });
                     }
-
                 }
             });
 
@@ -178,7 +187,7 @@ namespace Azzmurr.Utils {
             var checklistSelector = new VisualElement { style = { flexShrink = 0 } };
             var checklistSelectorField = new ObjectField {
                 objectType = typeof(MaterialCheckListBehaviourList),
-                value = AssetDatabase.LoadAllAssetsAtPath("Packages/com.azzmurr.texture-manager/Edtor/Scripts/MaterialCheckList/Checklist.asset")[0],
+                value = AssetDatabase.LoadAllAssetsAtPath("Packages/com.azzmurr.texture-manager/Editor/MaterialCheckList/CheckList.asset")[0],
                 name = "MaterialChecklist",
                 label = "Checklist: ",
                 style = {
@@ -200,7 +209,7 @@ namespace Azzmurr.Utils {
                 Refresh();
             });
 
-            checklistSelectorField.RegisterValueChangedCallback((e) => { Refresh(); });
+            checklistSelectorField.RegisterValueChangedCallback(_ => { Refresh(); });
 
             checklistSelector.Add(checklistSelectorField);
             materialSelector.Add(materialGameObjectField);
@@ -228,56 +237,51 @@ namespace Azzmurr.Utils {
             ChecklistView.itemsSource = behaviour?.items.Where((item) => {
                 if (item.showPropertyIf == ShowPropertyIf.ShowAlways) return true;
 
-                switch (item.showPropertyIfPropertyType) {
-                    case SupportedMaterialPropertyType.Bool: {
+                switch (item.showPropertyIfPropertyValue.type) {
+                    case UniversalValue.ValueType.Bool: {
                         var actualBoolPropertyValue = Material.GetPropertyValue<float>(item.showPropertyIfPropertyName);
-                        var propertyBoolValue = item.showPropertyIfPropertyBoolValue ? 1f : 0f;
+                        var propertyBoolValue = (bool)item.showPropertyIfPropertyValue.GetValue() ? 1f : 0f;
 
                         return item.showPropertyIf == ShowPropertyIf.ShowIfEquals
                             ? Mathf.Approximately(actualBoolPropertyValue, propertyBoolValue)
                             : !Mathf.Approximately(actualBoolPropertyValue, propertyBoolValue);
                     }
 
-                    case SupportedMaterialPropertyType.Int:
+                    case UniversalValue.ValueType.Int:
                         var actualIntPropertyValue = Material.GetPropertyValue<int>(item.showPropertyIfPropertyName);
-                        var propertyIntValue = item.showPropertyIfPropertyIntValue;
+                        var propertyIntValue = (int)item.showPropertyIfPropertyValue.GetValue();
 
                         return item.showPropertyIf == ShowPropertyIf.ShowIfEquals
                             ? actualIntPropertyValue == propertyIntValue
                             : actualIntPropertyValue != propertyIntValue;
 
-                    case SupportedMaterialPropertyType.Float:
-                        var actualFloatPropertyValue =
-                            Material.GetPropertyValue<float>(item.showPropertyIfPropertyName);
-                        var propertyFloatValue = item.showPropertyIfPropertyFloatValue;
+                    case UniversalValue.ValueType.Float:
+                        var actualFloatPropertyValue = Material.GetPropertyValue<float>(item.showPropertyIfPropertyName);
+                        var propertyFloatValue = (float)item.showPropertyIfPropertyValue.GetValue();
 
                         return item.showPropertyIf == ShowPropertyIf.ShowIfEquals
                             ? Mathf.Approximately(actualFloatPropertyValue, propertyFloatValue)
                             : !Mathf.Approximately(actualFloatPropertyValue, propertyFloatValue);
 
-                    case SupportedMaterialPropertyType.Color:
-                    case SupportedMaterialPropertyType.ColorHDR:
-                        var actualColorPropertyValue =
-                            Material.GetPropertyValue<Color>(item.showPropertyIfPropertyName);
-                        var propertyColorValue = item.showPropertyIfPropertyColorValue;
+                    case UniversalValue.ValueType.Color:
+                        var actualColorPropertyValue = Material.GetPropertyValue<Color>(item.showPropertyIfPropertyName);
+                        var propertyColorValue = (Color)item.showPropertyIfPropertyValue.GetValue();
 
                         return item.showPropertyIf == ShowPropertyIf.ShowIfEquals
                             ? actualColorPropertyValue == propertyColorValue
                             : actualColorPropertyValue != propertyColorValue;
 
-                    case SupportedMaterialPropertyType.Vector4:
-                        var actualVector4PropertyValue =
-                            Material.GetPropertyValue<Vector4>(item.showPropertyIfPropertyName);
-                        var propertyVector4Value = item.showPropertyIfPropertyVector4Value;
+                    case UniversalValue.ValueType.Vector4:
+                        var actualVector4PropertyValue = Material.GetPropertyValue<Vector4>(item.showPropertyIfPropertyName);
+                        var propertyVector4Value = (Vector4)item.showPropertyIfPropertyValue.GetValue();
 
                         return item.showPropertyIf == ShowPropertyIf.ShowIfEquals
                             ? actualVector4PropertyValue == propertyVector4Value
                             : actualVector4PropertyValue != propertyVector4Value;
 
-                    case SupportedMaterialPropertyType.Texture:
-                        var actualTexturePropertyValue =
-                            Material.GetPropertyValue<Texture>(item.showPropertyIfPropertyName);
-                        var propertyTextureValue = item.showPropertyIfPropertyTextureValue;
+                    case UniversalValue.ValueType.Texture:
+                        var actualTexturePropertyValue = Material.GetPropertyValue<Texture>(item.showPropertyIfPropertyName);
+                        var propertyTextureValue = (Texture)item.showPropertyIfPropertyValue.GetValue();
 
                         return item.showPropertyIf == ShowPropertyIf.ShowIfEquals
                             ? actualTexturePropertyValue == propertyTextureValue

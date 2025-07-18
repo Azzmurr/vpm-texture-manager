@@ -27,43 +27,17 @@ namespace Azzmurr.Utils {
     [Serializable]
     public class MaterialCheckListItem {
         public string propertyName;
-
-        public SupportedMaterialPropertyType type;
         public PropertyCheckType propertyCheckType;
+        public UniversalValue desiredValue;
 
-        public bool desiredBoolValue;
-        public int desiredIntValue;
-        public float desiredFloatValue;
-        public Color desiredColorValue;
-        public Color desiredColorHDRValue;
-        public Vector4 desiredVector4Value;
-        public Texture desiredTextureValue;
-
-        public string desiredPropertyNameToCopyValue;
+        public string sameAsFieldName;
 
         public ShowPropertyIf showPropertyIf;
-        public SupportedMaterialPropertyType showPropertyIfPropertyType;
         public string showPropertyIfPropertyName;
-        public bool showPropertyIfPropertyBoolValue;
-        public int showPropertyIfPropertyIntValue;
-        public float showPropertyIfPropertyFloatValue;
-        public Color showPropertyIfPropertyColorValue;
-        public Color showPropertyIfPropertyColorHDRValue;
-        public Vector4 showPropertyIfPropertyVector4Value;
-        public Texture showPropertyIfPropertyTextureValue;
+        public UniversalValue showPropertyIfPropertyValue;
 
         public CopyPropertyOnFix copyPropertyOnFix;
         public string copyPropertyValueToPropertyName;
-    }
-
-    public enum SupportedMaterialPropertyType {
-        Bool,
-        Int,
-        Float,
-        Color,
-        ColorHDR,
-        Vector4,
-        Texture,
     }
 
     public enum PropertyCheckType {

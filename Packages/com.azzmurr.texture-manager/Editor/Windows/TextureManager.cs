@@ -123,6 +123,8 @@ namespace Azzmurr.Utils {
             textureListGUI.columns.Add(new Column {
                 title = "Texture",
                 width = 200,
+                stretchable = true,
+                resizable = true,
                 makeCell = () => new ObjectField {
                     objectType = typeof(Texture2D),
                 },
@@ -136,6 +138,8 @@ namespace Azzmurr.Utils {
             textureListGUI.columns.Add(new Column {
                 title = "Materials",
                 width = 100,
+                stretchable = false,
+                resizable = true,
                 makeCell = () => new Foldout { text = "Materials", value = false },
                 bindCell = (element, index) => {
                     var foldout = (Foldout)element;
@@ -159,6 +163,8 @@ namespace Azzmurr.Utils {
             textureListGUI.columns.Add(new Column {
                 title = "Size",
                 width = 100,
+                stretchable = false,
+                resizable = false,
                 makeCell = () => new Label(),
                 bindCell = (element, index) => {
                     var label = (Label)element;
@@ -170,6 +176,8 @@ namespace Azzmurr.Utils {
             textureListGUI.columns.Add(new Column {
                 title = "PC Resolution",
                 width = 100,
+                stretchable = false,
+                resizable = false,
                 makeCell = () => new PopupField<int> {
                     choices = _textureSizeOptions,
                 },
@@ -193,6 +201,8 @@ namespace Azzmurr.Utils {
             textureListGUI.columns.Add(new Column {
                 title = "Android Resolution",
                 width = 100,
+                stretchable = false,
+                resizable = false,
                 makeCell = () => new PopupField<int> {
                     choices = _textureSizeOptions,
                 },
@@ -216,6 +226,8 @@ namespace Azzmurr.Utils {
             textureListGUI.columns.Add(new Column {
                 title = "Format",
                 width = 150,
+                stretchable = false,
+                resizable = true,
                 makeCell = () => new PopupField<TextureImporterFormat> {
                     choices = _compressionFormatOptions,
                 },
@@ -239,6 +251,8 @@ namespace Azzmurr.Utils {
             textureListGUI.columns.Add(new Column {
                 title = "Actions",
                 minWidth = 200,
+                stretchable = true,
+                resizable = true,
                 bindCell = (element, index) => {
                     element.Clear();
                     var texture = (TextureMeta)textureListGUI.viewController.GetItemForIndex(index);
