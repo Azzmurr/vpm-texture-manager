@@ -180,6 +180,7 @@ namespace Azzmurr.Utils {
                     var list = (MultiColumnListView)element;
                     var material = (MaterialMeta)materialsListGUI.viewController.GetItemForIndex(index);
                     list.itemsSource = new List<MaterialQuickInfo> {
+                        new() { title = "Material", Content = new ObjectField() { value = material.Material, objectType = typeof(Material), style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } } },
                         new() { title = "Shader", Content = new Label(material.ShaderName) { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } } },
                         new() {
                             title = "Locked",
@@ -249,14 +250,22 @@ namespace Azzmurr.Utils {
                     var material = (MaterialMeta)materialsListGUI.viewController.GetItemForIndex(index);
                     element.Clear();
                     material.Textures
-                        .ConvertAll((texture) => new VisualElement {
-                            style = {
-                                width = 90,
-                                height = 90,
-                                marginRight = 8,
-                                flexShrink = 0,
-                                backgroundImage = Background.FromTexture2D((Texture2D)texture.Texture),
-                            }
+                        .ConvertAll((texture) => {
+
+                            var element = new VisualElement {
+                                style = {
+                                    width = 90,
+                                    height = 90,
+                                    marginRight = 8,
+                                    flexShrink = 0,
+                                    backgroundImage = Background.FromTexture2D((Texture2D)texture.Texture),
+                                }
+                            };
+
+                            var clickable = new Clickable(e => EditorGUIUtility.PingObject(texture.Texture));
+                            element.AddManipulator(clickable);
+
+                            return element;
                         })
                         .ForEach(element.Add);
                 }
