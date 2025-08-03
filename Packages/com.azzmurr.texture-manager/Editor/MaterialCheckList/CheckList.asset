@@ -166,7 +166,7 @@ MonoBehaviour:
       copyPropertyOnFix: 0
       copyPropertyValueToPropertyName: 
     - propertyName: _EmissionMask
-      propertyCheckType: 0
+      propertyCheckType: 2
       desiredValue:
         type: 5
         isHDR: 0
@@ -175,20 +175,20 @@ MonoBehaviour:
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
         vector4Value: {x: 0, y: 0, z: 0, w: 0}
-        textureValue: {fileID: 2800000, guid: a43e3197e3af367458fa25637d0ace57, type: 3}
+        textureValue: {fileID: 0}
       sameAsFieldName: _EnableAudioLink
-      showPropertyIf: 0
-      showPropertyIfPropertyName: 
+      showPropertyIf: 1
+      showPropertyIfPropertyName: _EmissionMask
       showPropertyIfPropertyValue:
-        type: 0
+        type: 5
         isHDR: 0
         boolValue: 0
         intValue: 0
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
         vector4Value: {x: 0, y: 0, z: 0, w: 0}
-        textureValue: {fileID: 0}
-      copyPropertyOnFix: 1
+        textureValue: {fileID: 2800000, guid: a43e3197e3af367458fa25637d0ace57, type: 3}
+      copyPropertyOnFix: 0
       copyPropertyValueToPropertyName: _EmissionMap
     - propertyName: _EmissionMask1
       propertyCheckType: 1
@@ -203,17 +203,17 @@ MonoBehaviour:
         textureValue: {fileID: 2800000, guid: a43e3197e3af367458fa25637d0ace57, type: 3}
       sameAsFieldName: _EmissionMask
       showPropertyIf: 1
-      showPropertyIfPropertyName: _EnableAudioLink
+      showPropertyIfPropertyName: _EmissionMask1
       showPropertyIfPropertyValue:
-        type: 0
+        type: 5
         isHDR: 0
         boolValue: 1
         intValue: 0
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
         vector4Value: {x: 0, y: 0, z: 0, w: 0}
-        textureValue: {fileID: 0}
-      copyPropertyOnFix: 1
+        textureValue: {fileID: 2800000, guid: a43e3197e3af367458fa25637d0ace57, type: 3}
+      copyPropertyOnFix: 0
       copyPropertyValueToPropertyName: _EmissionMap1
     - propertyName: _EmissionMask2
       propertyCheckType: 1
@@ -228,17 +228,17 @@ MonoBehaviour:
         textureValue: {fileID: 2800000, guid: a43e3197e3af367458fa25637d0ace57, type: 3}
       sameAsFieldName: _EmissionMask
       showPropertyIf: 1
-      showPropertyIfPropertyName: _EnableAudioLink
+      showPropertyIfPropertyName: _EmissionMask2
       showPropertyIfPropertyValue:
-        type: 0
+        type: 5
         isHDR: 0
         boolValue: 1
         intValue: 0
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
         vector4Value: {x: 0, y: 0, z: 0, w: 0}
-        textureValue: {fileID: 0}
-      copyPropertyOnFix: 1
+        textureValue: {fileID: 2800000, guid: a43e3197e3af367458fa25637d0ace57, type: 3}
+      copyPropertyOnFix: 0
       copyPropertyValueToPropertyName: _EmissionMap2
     - propertyName: _EmissionMask3
       propertyCheckType: 1
@@ -253,20 +253,20 @@ MonoBehaviour:
         textureValue: {fileID: 2800000, guid: a43e3197e3af367458fa25637d0ace57, type: 3}
       sameAsFieldName: _EmissionMask
       showPropertyIf: 1
-      showPropertyIfPropertyName: _EnableAudioLink
+      showPropertyIfPropertyName: _EmissionMask3
       showPropertyIfPropertyValue:
-        type: 0
+        type: 5
         isHDR: 0
         boolValue: 1
         intValue: 0
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
         vector4Value: {x: 0, y: 0, z: 0, w: 0}
-        textureValue: {fileID: 0}
-      copyPropertyOnFix: 1
+        textureValue: {fileID: 2800000, guid: a43e3197e3af367458fa25637d0ace57, type: 3}
+      copyPropertyOnFix: 0
       copyPropertyValueToPropertyName: _EmissionMap3
     - propertyName: _EmissionMap
-      propertyCheckType: 2
+      propertyCheckType: 0
       desiredValue:
         type: 5
         isHDR: 0
@@ -291,7 +291,7 @@ MonoBehaviour:
       copyPropertyOnFix: 0
       copyPropertyValueToPropertyName: _EmissionMap3
     - propertyName: _EmissionMap1
-      propertyCheckType: 2
+      propertyCheckType: 0
       desiredValue:
         type: 5
         isHDR: 0
@@ -316,7 +316,7 @@ MonoBehaviour:
       copyPropertyOnFix: 0
       copyPropertyValueToPropertyName: _EmissionMap3
     - propertyName: _EmissionMap2
-      propertyCheckType: 2
+      propertyCheckType: 0
       desiredValue:
         type: 5
         isHDR: 0
@@ -341,7 +341,7 @@ MonoBehaviour:
       copyPropertyOnFix: 0
       copyPropertyValueToPropertyName: _EmissionMap3
     - propertyName: _EmissionMap3
-      propertyCheckType: 2
+      propertyCheckType: 0
       desiredValue:
         type: 5
         isHDR: 0
@@ -374,7 +374,7 @@ MonoBehaviour:
         intValue: 6
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
-        vector4Value: {x: 0, y: -0.08, z: 0, w: 0}
+        vector4Value: {x: 0, y: 0, z: 0, w: 0}
         textureValue: {fileID: 0}
       sameAsFieldName: _EmissionMask
       showPropertyIf: 0
@@ -399,7 +399,7 @@ MonoBehaviour:
         intValue: 6
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
-        vector4Value: {x: 0, y: -0.08, z: 0, w: 0}
+        vector4Value: {x: 0, y: 0, z: 0, w: 0}
         textureValue: {fileID: 0}
       sameAsFieldName: _EmissionMask
       showPropertyIf: 1
@@ -424,7 +424,7 @@ MonoBehaviour:
         intValue: 6
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
-        vector4Value: {x: 0, y: -0.08, z: 0, w: 0}
+        vector4Value: {x: 0, y: 0, z: 0, w: 0}
         textureValue: {fileID: 0}
       sameAsFieldName: _EmissionMask
       showPropertyIf: 1
@@ -449,7 +449,7 @@ MonoBehaviour:
         intValue: 6
         floatValue: 0
         colorValue: {r: 0, g: 0, b: 0, a: 0}
-        vector4Value: {x: 0, y: -0.08, z: 0, w: 0}
+        vector4Value: {x: 0, y: 0, z: 0, w: 0}
         textureValue: {fileID: 0}
       sameAsFieldName: _EmissionMask
       showPropertyIf: 1

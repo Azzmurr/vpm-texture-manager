@@ -8,8 +8,8 @@ namespace Azzmurr.Utils {
     public class UniversalValueField : BindableElement, INotifyValueChanged<UniversalValue> {
         private readonly EnumField _typeField;
         private readonly VisualElement _valueContainer;
-        private SerializedProperty _valueProp; // Used only when BindProperty is called
-        private UniversalValue _localValue; // Stores the value when not using BindProperty
+        private SerializedProperty _valueProp;
+        private UniversalValue _localValue;
 
         public UniversalValueField() {
             style.flexDirection = FlexDirection.Row;
@@ -17,14 +17,12 @@ namespace Azzmurr.Utils {
             _typeField = new EnumField(UniversalValue.ValueType.Bool) { style = { width = 100 } };
             _typeField.RegisterValueChangedCallback(evt => {
                 if (_valueProp != null) {
-                    // If using BindProperty, update the SerializedProperty
                     _valueProp.serializedObject.Update();
                     _valueProp.FindPropertyRelative(nameof(UniversalValue.type)).enumValueIndex = (int)(UniversalValue.ValueType)evt.newValue;
                     _valueProp.serializedObject.ApplyModifiedProperties();
                 }
                 else {
-                    // Update local value
-                    if (_localValue == null) _localValue = new UniversalValue();
+                    _localValue ??= new UniversalValue();
                     _localValue.type = (UniversalValue.ValueType)evt.newValue;
                 }
 
@@ -36,7 +34,6 @@ namespace Azzmurr.Utils {
             Add(_typeField);
             Add(_valueContainer);
 
-            // Initialize with a default local value
             _localValue = new UniversalValue();
             UpdateField();
         }
@@ -47,7 +44,7 @@ namespace Azzmurr.Utils {
 
         public void BindProperty(SerializedProperty property) {
             _valueProp = property;
-            _localValue = null; // Clear local value since we're using SerializedProperty now
+            _localValue = null;
 
             var typeRel = property.FindPropertyRelative(nameof(UniversalValue.type));
             _typeField.SetValueWithoutNotify((UniversalValue.ValueType)typeRel.enumValueIndex);
@@ -265,14 +262,12 @@ namespace Azzmurr.Utils {
 
         private void SendValueChangedEvent() {
             if (_valueProp != null) {
-                // If the field is bound to a SerializedProperty, notify using its current value
                 var newValue = GetValueFromProperty();
                 var evt = ChangeEvent<UniversalValue>.GetPooled(value, newValue);
                 evt.target = this;
                 SendEvent(evt);
             } else {
-                // If using local value, notify directly
-                var oldValue = value; // Current value before change
+                var oldValue = value;
                 var evt = ChangeEvent<UniversalValue>.GetPooled(oldValue, _localValue);
                 evt.target = this;
                 SendEvent(evt);
