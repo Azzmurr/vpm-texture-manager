@@ -31,6 +31,7 @@ namespace Azzmurr.Utils {
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
                 style = {
                     marginTop = 8,
+                    flexShrink = 0,
                 }
             };
 
@@ -279,7 +280,7 @@ namespace Azzmurr.Utils {
             root.style.paddingRight = 8;
             root.style.paddingLeft = 8;
 
-            var avatarSelector = new VisualElement();
+            var avatarSelector = new VisualElement { style = { flexShrink = 0 }};
             var avatarGameObjectField = new ObjectField {
                 objectType = typeof(GameObject),
                 value = _avatar?.GameObject,

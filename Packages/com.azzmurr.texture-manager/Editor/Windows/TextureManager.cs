@@ -48,6 +48,7 @@ namespace Azzmurr.Utils {
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
                 style = {
                     marginTop = 8,
+                    flexShrink = 0,
                 }
             };
 
@@ -93,6 +94,12 @@ namespace Azzmurr.Utils {
                         new(() => { DoAndRedraw(() => _avatar.MakeTexturesReadyForAndroid()); })
                             { text = "Prepare for Android" },
                         new(() => { DoAndRedraw(() => _avatar.CrunchTextures()); }) { text = "Crunch" },
+                        new(() => { DoAndRedraw((textures) => {
+                            var list = _avatar.textures;
+                            list.Sort((t1, t2) => t1.Size > t2.Size ? -1 : 1);
+
+                            textures.itemsSource = list;
+                        }); }) { text = "Sort by size" },
                     }
                 },
                 new() {
@@ -165,7 +172,7 @@ namespace Azzmurr.Utils {
                 width = 100,
                 stretchable = false,
                 resizable = false,
-                makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft }},
+                makeCell = () => new Label { style = { flexGrow = 1, unityTextAlign = TextAnchor.MiddleLeft } },
                 bindCell = (element, index) => {
                     var label = (Label)element;
                     var texture = (TextureMeta)textureListGUI.viewController.GetItemForIndex(index);
@@ -258,7 +265,7 @@ namespace Azzmurr.Utils {
                     var texture = (TextureMeta)textureListGUI.viewController.GetItemForIndex(index);
 
                     if (texture.Poiyomi) {
-                        element.Add(new Label { text = "Poiyomi textures are ignored and can't be changed", style = { flexGrow = 1 }});
+                        element.Add(new Label { text = "Poiyomi textures are ignored and can't be changed", style = { flexGrow = 1 } });
                     }
 
                     if (texture.BetterTextureFormat != null) {
@@ -282,7 +289,7 @@ namespace Azzmurr.Utils {
                         element.Add(new Button(() => {
                             texture.ChangeImportSize(2048);
                             DoAndRedraw(textureListGUI, index, () => _avatar.Recalculate());
-                        }) { text =  $"2k → -{texture.SaveSizeWithSmallerTexture}" });
+                        }) { text = $"2k → -{texture.SaveSizeWithSmallerTexture}" });
                     }
                 }
             });
@@ -295,7 +302,7 @@ namespace Azzmurr.Utils {
             root.style.paddingRight = 8;
             root.style.paddingLeft = 8;
 
-            var avatarSelector = new VisualElement();
+            var avatarSelector = new VisualElement { style = { flexShrink = 0 } };
             var avatarGameObjectField = new ObjectField {
                 objectType = typeof(GameObject),
                 value = _avatar?.GameObject,
@@ -355,6 +362,12 @@ namespace Azzmurr.Utils {
         private void DoAndRedraw(Action action) {
             var list = rootVisualElement.Q<MultiColumnListView>("Textures List");
             action.Invoke();
+            list.RefreshItems();
+        }
+
+        private void DoAndRedraw(Action<MultiColumnListView> action) {
+            var list = rootVisualElement.Q<MultiColumnListView>("Textures List");
+            action.Invoke(list);
             list.RefreshItems();
         }
 
